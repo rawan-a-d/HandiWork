@@ -23,6 +23,13 @@ namespace Users.Data
 		/// <returns></returns>
 		User GetUser(int id);
 
-		void CreateUser(User user);
+		void UpdateUser(User user);
+
+		/// <summary>
+		/// Check if user exists
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public Boolean UserExists(int id);
 	}
 }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Users.Dtos
 {
-	public class UserCreateDto
+	public class UserUpdateDto
 	{
 		[Required]
 		public string? Name { get; set; }
@@ -11,7 +11,9 @@ namespace Users.Dtos
 		[EmailAddress]
 		public string? Email { get; set; }
 
-		[Required]
-		public string? Password { get; set; }
+		[Phone]
+		public string? Phone { get; set; }
+
+		public string? Address { get; set; }
 	}
 }

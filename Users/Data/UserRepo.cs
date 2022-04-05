@@ -12,14 +12,14 @@ namespace Users.Data
 			_context = context;
 		}
 
-		public void CreateUser(User user)
+		public void UpdateUser(User user)
 		{
 			if (user == null)
 			{
 				throw new ArgumentNullException(nameof(user));
 			}
 
-			_context.Users.Add(user);
+			_context.Users.Update(user);
 		}
 
 		public User GetUser(int id)
@@ -30,6 +30,11 @@ namespace Users.Data
 		public IEnumerable<User> GetUsers()
 		{
 			throw new NotImplementedException();
+		}
+
+		public Boolean UserExists(int id)
+		{
+			return _context.Users.Any(u => u.Id == id);
 		}
 
 		public bool SaveChanges()

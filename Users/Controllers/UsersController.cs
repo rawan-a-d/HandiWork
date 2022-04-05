@@ -33,25 +33,27 @@ namespace Users.Controllers
 			return NotFound();
 		}
 
-		[HttpPost]
-		public ActionResult<UserReadDto> CreateUser(UserCreateDto userCreateDto)
+		[HttpPut("{id}")]
+		public ActionResult<UserReadDto> UpdateUser(int id, UserUpdateDto userUpdateDto)
 		{
-			// map UserCreateDto to User
-			var userModel = _mapper.Map<User>(userCreateDto);
+			if (!_repository.UserExists(id))
+			{
+				return BadRequest();
+			}
+
+			// map UserUpdateDto to User
+			var userModel = _mapper.Map<User>(userUpdateDto);
+			userModel.Id = id;
 
 			// create user
-			_repository.CreateUser(userModel);
+			_repository.UpdateUser(userModel);
 			// save to db
 			_repository.SaveChanges();
 
 			// get UserReadDto and return to user
 			var userReadDto = _mapper.Map<UserReadDto>(userModel);
 
-			return CreatedAtRoute(
-				nameof(GetUser),
-				new { Id = userReadDto.Id },
-				userReadDto
-			);
+			return NoContent();
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace Users.Profiles
 		{
 			// Source -> Target
 			CreateMap<User, UserReadDto>();
-			CreateMap<UserCreateDto, User>();
+			CreateMap<UserUpdateDto, User>();
 		}
 	}
 }
