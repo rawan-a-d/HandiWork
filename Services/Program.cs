@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Services.Data;
+using Users.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,17 +11,31 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// -------------------
+// Database
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+
+// Automapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// Repo
+builder.Services.AddScoped<IServiceRepo, ServiceRepo>();
+// -------------------
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Prep data
+PrepDb.PrepPopulation(app);
 
 app.Run();
