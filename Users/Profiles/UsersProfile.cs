@@ -12,6 +12,7 @@ namespace Users.Profiles
 			// Source -> Target
 			CreateMap<User, UserReadDto>();
 			CreateMap<UserUpdateDto, User>();
+			CreateMap<UserReadDto, UserPublishedDto>();
 		}
 	}
 }

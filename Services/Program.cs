@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Services.AsyncDataServices;
 using Services.Data;
+using Services.EventProcessing;
 using Users.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,13 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Repo
 builder.Services.AddScoped<IServiceRepo, ServiceRepo>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
+
+// Event Processor
+builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+
+// Message bus subscriber
+builder.Services.AddHostedService<MessageBusSubscriber>();
 // -------------------
 
 var app = builder.Build();

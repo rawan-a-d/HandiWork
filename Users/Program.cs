@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Users.AsyncDataServices;
 using Users.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 // User Repo
 builder.Services.AddScoped<IUserRepo, UserRepo>();
+
+// RabbitMQ
+builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
