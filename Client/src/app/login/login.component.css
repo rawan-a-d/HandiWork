@@ -1,0 +1,32 @@
+.form-signin {
+	width: 50%;
+	margin: 20% 25%;
+	padding: 10% 2%;
+	border: 1px black solid;
+	border-radius: 2%;
+}
+
+.form-signin-heading {
+	text-align: center;
+}
+
+mat-form-field {
+	display: block;
+}
+
+.invalid-login {
+	color: red;
+	margin-bottom: 2%;
+}
+
+#login-btn {
+	width: 100%;
+}
+
+#no-account-div {
+	margin-top: 8%;
+}
+
+#register-now-span {
+	cursor: pointer;
+}
