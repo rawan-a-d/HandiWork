@@ -1,0 +1,44 @@
+<form class="register-form">
+	<h2 class="register-form__heading">
+		Register
+	</h2>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Name</mat-label>
+		<input matInput ngModel name="name" required formControlName="name">
+	</mat-form-field>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Email address</mat-label>
+		<input type="email" matInput placeholder="john@example.com" name="email" formControlName="email">
+	</mat-form-field>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Password</mat-label>
+		<input #passwordWithValidation matInput [type]="hide ? 'password' : 'text'" name="password" required
+			formControlName="password">
+		<button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+			[attr.aria-pressed]="hide">
+			<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+		</button>
+	</mat-form-field>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Confirm Password</mat-label>
+		<input matInput [type]="hide ? 'password' : 'text'" name="confirmPassword" required
+			formControlName="confirmPassword">
+		<button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+			[attr.aria-pressed]="hide">
+			<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+		</button>
+	</mat-form-field>
+
+	<button mat-raised-button color="accent" id="register-form__button">Register</button>
+
+	<div id="register-form__already-have-account">
+		Already have an account?
+		<span id="register-form__login-now">
+			<u>Login now</u>
+		</span>
+	</div>
+</form>
