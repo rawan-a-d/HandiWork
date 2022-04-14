@@ -20,6 +20,8 @@
     "@angular/platform-browser": "~13.3.3",
     "@angular/platform-browser-dynamic": "~13.3.3",
     "@angular/router": "~13.3.3",
+    "angular-bootstrap-md": "^4.3.2",
+    "material-design-icons": "^3.0.1",
     "ncss-linter": "^6.2.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.1.0",
