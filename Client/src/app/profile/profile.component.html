@@ -1,0 +1,53 @@
+<div class="container">
+	<div class="container__item">
+		<div class="container__row container__personal-info">
+			<img class="container__profile-image"
+				src="https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png">
+		</div>
+		<div class="container__row container__personal-info">
+			<h2>John doe</h2>
+		</div>
+		<div class="container__row container__personal-info">
+			<p>
+				It is a long established fact that a reader will be distracted by the readable content of a page when
+				looking at its
+				layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as
+				opposed to using
+				'Content here, content here', making it look like readable English. Many desktop publishing packages and
+				web page
+				editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover
+				many web sites
+				still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes
+				on purpose
+				(injected humour and the like).
+			</p>
+		</div>
+		<div class="container__row container__personal-info">
+			<h3>Contact details</h3>
+			067483343
+		</div>
+	</div>
+	<div class="container__item">
+		<div class="container__row container__one-row container__skills">
+			<h2>I am skilled in</h2>
+			<button mat-raised-button color="primary">Manage work</button>
+		</div>
+		<div class="container__row container__skills">
+			<mat-chip-list aria-label="Fish selection">
+				<mat-chip color="accent" selected>Painting</mat-chip>
+				<mat-chip>Installing laminate</mat-chip>
+			</mat-chip-list>
+		</div>
+		<div class="container__row container__skills">
+			<app-image-slider [images]="[
+				'https://www.paintzen.com/wp-content/uploads/2019/12/interior-paint-contractors-painting-paintzen.jpg',
+				'https://media.istockphoto.com/photos/man-in-a-working-overall-picture-id1015387276?k=20&m=1015387276&s=612x612&w=0&h=Vf9r2_8HePzA-qPdeKGc4lqQvOHqQq6eIaE8iDdUaxU=',
+				'https://mydecorative.com/wp-content/uploads/2019/06/interior-house-painting.jpg']">
+			</app-image-slider>
+		</div>
+		<div class="container__row container__skills container__see-portfolio">
+			<button class="container__see-portfolio-button" mat-raised-button color="accent">See entire
+				portfolio</button>
+		</div>
+	</div>
+</div>

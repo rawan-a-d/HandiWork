@@ -1,0 +1,36 @@
+.container {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+}
+
+/* Grid items (personal info and skills) */
+.container__item {
+	display: grid;
+	/*border: solid 1px black;*/
+	padding: 4%;
+}
+
+/* Show two items on one row */
+.container__one-row {
+	display: grid;
+	grid-template-columns: 4fr 1fr;
+}
+
+.container__skills {
+	margin-top: 2%;
+}
+
+.container__profile-image {
+	width: 80%;
+}
+
+/* See portfolio button container */
+.container__see-portfolio {
+	margin-left: 15%;
+	margin-right: 15%;
+}
+
+/* See portfolio button */
+.container__see-portfolio-button {
+	width: 100%;
+}
