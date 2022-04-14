@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatChipsModule } from '@angular/material/chips';
-
+import { MatTabsModule } from '@angular/material/tabs';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -15,6 +15,9 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ImageSliderComponent } from './image-slider/image-slider.component';
+import { ModeratorComponent } from './moderator/moderator.component';
+import { UsersComponent } from './moderator/users/users.component';
+import { ServiceCategoriesComponent } from './moderator/service-categories/service-categories.component';
 
 const matModules = [
 	MatFormFieldModule,
@@ -22,7 +25,8 @@ const matModules = [
 	MatIconModule,
 	MatButtonModule,
 	MatGridListModule,
-	MatChipsModule
+	MatChipsModule,
+	MatTabsModule
 ];
 
 @NgModule({
@@ -31,7 +35,10 @@ const matModules = [
 		LoginComponent,
 		RegisterComponent,
 		ProfileComponent,
-  ImageSliderComponent,
+		ImageSliderComponent,
+		ModeratorComponent,
+		UsersComponent,
+		ServiceCategoriesComponent,
 	],
 	imports: [
 		BrowserModule,
