@@ -1,0 +1,50 @@
+<!-- New category button -->
+<button mat-raised-button (click)="openDialog()" color="accent" class="new-skill">New skill</button>
+
+<!-- Table -->
+<table class="table table-bordered table-hover">
+	<thead class="table__header">
+		<tr class="table__row">
+			<th class="table__row-header">Id</th>
+			<th class="table__row-header">Skill</th>
+			<th class="table__row-header">Info</th>
+			<th class="table__row-header">Images</th>
+			<th class="table__row-header">Edit</th>
+			<th class="table__row-header">Delete</th>
+		</tr>
+	</thead>
+	<tbody class="table__body">
+		<tr class="table__row">
+			<td class="table__row-data">1</td>
+			<td class="table__row-data">Painting</td>
+			<td class="table__row-data">Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui illum sunt
+				laboriosam ex vel aliquam doloremque praesentium, nemo, odit enim eos amet eius ut exercitationem est,
+				possimus voluptatibus saepe aperiam.</td>
+			<td class="table__row-data">
+				<button mat-button color='primary'>Images</button>
+			</td>
+			<td class="table__row-data">
+				<button mat-stroked-button color='primary'>Edit</button>
+			</td>
+			<td class="table__row-data">
+				<button mat-stroked-button color='warn'>Delete</button>
+			</td>
+		</tr>
+		<tr class="table__row">
+			<td class="table__row-data">1</td>
+			<td class="table__row-data">Installing laminate</td>
+			<td class="table__row-data">Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui illum sunt
+				laboriosam ex vel aliquam doloremque praesentium, nemo, odit enim eos amet eius ut exercitationem est,
+				possimus voluptatibus saepe aperiam.</td>
+			<td class="table__row-data">
+				<button mat-button color='primary'>Images</button>
+			</td>
+			<td class="table__row-data">
+				<button mat-stroked-button color='primary'>Edit</button>
+			</td>
+			<td class="table__row-data">
+				<button mat-stroked-button color='warn'>Delete</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
