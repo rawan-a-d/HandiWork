@@ -1,5 +1,5 @@
 <!-- New category button -->
-<button mat-raised-button (click)="openDialog()" color="accent" class="new-skill">New skill</button>
+<button mat-raised-button (click)='openDialog("New skill")' color="accent" class="new-skill">New skill</button>
 
 <!-- Table -->
 <table class="table table-bordered table-hover">
@@ -24,7 +24,7 @@
 				<button mat-button color='primary'>Images</button>
 			</td>
 			<td class="table__row-data">
-				<button mat-stroked-button color='primary'>Edit</button>
+				<button mat-stroked-button color='primary' (click)='openDialog("Edit skill")'>Edit</button>
 			</td>
 			<td class="table__row-data">
 				<button mat-stroked-button color='warn'>Delete</button>
@@ -40,7 +40,7 @@
 				<button mat-button color='primary'>Images</button>
 			</td>
 			<td class="table__row-data">
-				<button mat-stroked-button color='primary'>Edit</button>
+				<button mat-stroked-button color='primary' (click)='openDialog("Edit skill")'>Edit</button>
 			</td>
 			<td class="table__row-data">
 				<button mat-stroked-button color='warn'>Delete</button>

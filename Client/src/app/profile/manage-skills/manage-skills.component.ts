@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NewSkillDialogComponent } from '../new-skill-dialog/new-skill-dialog.component';
+import { ManageSkillDialogComponent } from '../manage-skill-dialog/manage-skill-dialog.component';
 
 export interface SkillDialogData {
+	title: string,
 	skill: string;
 	info: string;
 }
@@ -21,10 +22,11 @@ export class ManageSkillsComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
-	openDialog(): void {
-		const dialogRef = this.dialog.open(NewSkillDialogComponent, {
+	openDialog(title: string): void {
+		const dialogRef = this.dialog.open(ManageSkillDialogComponent, {
 			width: '300px',
 			data: {
+				title: title,
 				skill: this.skill,
 				info: this.info
 			},
@@ -32,13 +34,21 @@ export class ManageSkillsComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe(result => {
 			console.log('The dialog was closed ', result);
-			// send request to backend
 			this.skill = result?.skill;
 			this.info = result?.info;
 
+			console.log(this.skill);
+			console.log(this.info);
+
+			// send request to backend
+			if (title == "New skill") {
+
+			}
+			else if (title == "Edit skill") {
+
+			}
+
 			// empty fields
-			console.log('The dialog was closed ', this.skill);
-			console.log('The dialog was closed ', this.info);
 		});
 	}
 }

@@ -28,7 +28,7 @@ import { HomeComponent } from './home/home.component';
 import { PossibleServicesComponent } from './home/possible-services/possible-services.component';
 import { SearchResultComponent } from './home/search-result/search-result.component';
 import { ManageSkillsComponent } from './profile/manage-skills/manage-skills.component';
-import { NewSkillDialogComponent } from './profile/new-skill-dialog/new-skill-dialog.component';
+import { ManageSkillDialogComponent } from './profile/manage-skill-dialog/manage-skill-dialog.component';
 
 const matModules = [
 	MatFormFieldModule,
@@ -56,10 +56,10 @@ const matModules = [
 		NewServiceCategoryDialogComponent,
 		NavbarComponent,
 		HomeComponent,
-  PossibleServicesComponent,
-  SearchResultComponent,
-  ManageSkillsComponent,
-  NewSkillDialogComponent,
+		PossibleServicesComponent,
+		SearchResultComponent,
+		ManageSkillsComponent,
+		ManageSkillDialogComponent,
 	],
 	imports: [
 		BrowserModule,
