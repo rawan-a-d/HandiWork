@@ -11,6 +11,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -23,6 +24,9 @@ import { UsersComponent } from './moderator/users/users.component';
 import { ServiceCategoriesComponent } from './moderator/service-categories/service-categories.component';
 import { NewServiceCategoryDialogComponent } from './moderator/new-service-category-dialog/new-service-category-dialog.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { HomeComponent } from './home/home.component';
+import { PossibleServicesComponent } from './home/possible-services/possible-services.component';
+import { SearchResultComponent } from './home/search-result/search-result.component';
 
 const matModules = [
 	MatFormFieldModule,
@@ -33,7 +37,8 @@ const matModules = [
 	MatChipsModule,
 	MatTabsModule,
 	MatDialogModule,
-	MatToolbarModule
+	MatToolbarModule,
+	MatCardModule
 ];
 
 @NgModule({
@@ -48,6 +53,9 @@ const matModules = [
 		ServiceCategoriesComponent,
 		NewServiceCategoryDialogComponent,
 		NavbarComponent,
+		HomeComponent,
+  PossibleServicesComponent,
+  SearchResultComponent,
 	],
 	imports: [
 		BrowserModule,
