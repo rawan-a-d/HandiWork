@@ -29,7 +29,12 @@ namespace Users.Data
 
 		public IEnumerable<User> GetUsers()
 		{
-			throw new NotImplementedException();
+			return _context.Users;
+		}
+
+		public void DeleteUser(User user)
+		{
+			_context.Users.Remove(user);
 		}
 
 		public Boolean UserExists(int id)

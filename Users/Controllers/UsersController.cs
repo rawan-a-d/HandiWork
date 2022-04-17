@@ -26,6 +26,14 @@ namespace Users.Controllers
 			_messageBusClient = messageBusClient;
 		}
 
+		[HttpGet]
+		public ActionResult<IEnumerable<UserReadDto>> GetUsers()
+		{
+			var users = _repository.GetUsers();
+
+			return Ok(users);
+		}
+
 		[HttpGet("{id}", Name = "GetUser")]
 		public ActionResult<UserReadDto> GetUser(int id)
 		{
@@ -73,6 +81,22 @@ namespace Users.Controllers
 			}
 
 			return NoContent();
+		}
+
+		[HttpDelete("{id}")]
+		public ActionResult DeleteUser(int id)
+		{
+			var user = _repository.GetUser(id);
+
+			_repository.DeleteUser(user);
+
+			// save to db
+			if (_repository.SaveChanges())
+			{
+				return Ok();
+			}
+
+			return BadRequest("User cannot be removed");
 		}
 	}
 }

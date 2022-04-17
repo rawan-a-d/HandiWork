@@ -23,7 +23,17 @@ namespace Users.Data
 		/// <returns></returns>
 		User GetUser(int id);
 
+		/// <summary>
+		/// Update user
+		/// </summary>
+		/// <param name="user"></param>
 		void UpdateUser(User user);
+
+		/// <summary>
+		/// Delete user by id
+		/// </summary>
+		/// <param name="user"></param>
+		void DeleteUser(User user);
 
 		/// <summary>
 		/// Check if user exists
