@@ -23,12 +23,12 @@ namespace Services.Data
 
 		public void UpdateUser(User user)
 		{
-			_context.Users?.Update(user);
+			_context.Users.Update(user);
 		}
 
 		public User GetUser(int id)
 		{
-			return _context.Users?.Find(id);
+			return _context.Users.Find(id);
 		}
 	}
 }

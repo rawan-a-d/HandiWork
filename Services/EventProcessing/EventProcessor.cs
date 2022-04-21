@@ -34,7 +34,7 @@ namespace Services.EventProcessing
 		{
 			var eventType = JsonSerializer.Deserialize<GenericEventDto>(notificationMessage);
 
-			switch (eventType?.Event)
+			switch (eventType.Event)
 			{
 				case "User_Updated":
 					Console.WriteLine("--> User Updated Event Detected");

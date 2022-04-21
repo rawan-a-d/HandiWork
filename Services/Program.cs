@@ -29,6 +29,9 @@ builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 
 // Message bus subscriber
 builder.Services.AddHostedService<MessageBusSubscriber>();
+
+// Automapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // -------------------
 
 var app = builder.Build();

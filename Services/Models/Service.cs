@@ -9,7 +9,7 @@ namespace Services.Models
 		public int Id { get; set; }
 
 		[Required]
-		public string? Info { get; set; }
+		public string Info { get; set; }
 
 		[Required]
 		public int UserId { get; set; }
@@ -18,7 +18,7 @@ namespace Services.Models
 		public int ServiceCategoryId { get; set; }
 
 		// navigation property
-		public ServiceCategory? ServiceCategory { get; set; }
-		public User? User { get; set; }
+		public ServiceCategory ServiceCategory { get; set; }
+		public User User { get; set; }
 	}
 }

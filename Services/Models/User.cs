@@ -12,6 +12,8 @@ namespace Services.Models
 		public int ExternalId { get; set; }
 
 		[Required]
-		public string? Name { get; set; }
+		public string Name { get; set; }
+
+		public ICollection<Service> Services { get; set; }
 	}
 }

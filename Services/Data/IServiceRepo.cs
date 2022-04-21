@@ -6,10 +6,14 @@ namespace Services.Data
 	{
 		bool SaveChanges();
 
-		IEnumerable<Service> GetAllServices();
+		IEnumerable<Service> GetServicesForUser(int userId);
 
-		Service GetServiceById(int id);
+		Service GetService(int serviceId, int userId);
 
-		void CreateService(int serviceCategoryId, Service service);
+		void CreateService(int userId, Service service);
+
+		void UpdateService(Service service);
+
+		void DeleteService(Service service);
 	}
 }
