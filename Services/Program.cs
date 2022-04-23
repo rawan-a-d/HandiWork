@@ -23,6 +23,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Repo
 builder.Services.AddScoped<IServiceRepo, ServiceRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IServiceCategoryRepo, ServiceCategoryRepo>();
 
 // Event Processor
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();

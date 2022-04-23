@@ -11,12 +11,47 @@ namespace Services.Controllers
 	public class ServicesController : ControllerBase
 	{
 		private readonly IServiceRepo _repository;
+		private readonly IServiceCategoryRepo _serviceCategoryRepository;
 		private readonly IMapper _mapper;
 
-		public ServicesController(IServiceRepo repository, IMapper mapper)
+		public ServicesController(IServiceRepo repository, IServiceCategoryRepo serviceCategoryRepository, IMapper mapper)
 		{
-			_mapper = mapper;
 			_repository = repository;
+			_serviceCategoryRepository = serviceCategoryRepository;
+			_mapper = mapper;
+		}
+
+		/// <summary>
+		/// Create new service
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="serviceCreateDto"></param>
+		/// <returns></returns>
+		[HttpPost]
+		public ActionResult CreateService(int userId, ServiceCreateDto serviceCreateDto)
+		{
+			// TODO: validate user is logged in
+
+			// check if category exists
+			var serviceCategory = _serviceCategoryRepository.GetServiceCategory(serviceCreateDto.ServiceCategoryId);
+
+			if (serviceCategory == null)
+			{
+				return BadRequest("Service category does not exist");
+			}
+
+			var serviceModel = _mapper.Map<Service>(serviceCreateDto);
+
+			_repository.CreateService(userId, serviceModel);
+			_repository.SaveChanges();
+
+			var serviceReadDto = _mapper.Map<ServiceReadDto>(serviceModel);
+
+			return CreatedAtRoute(
+				nameof(GetService),
+				new { userId = userId, serviceId = serviceReadDto.Id },
+				serviceReadDto
+			);
 		}
 
 		/// <summary>
@@ -56,33 +91,6 @@ namespace Services.Controllers
 		}
 
 		/// <summary>
-		/// Create new service
-		/// </summary>
-		/// <param name="userId"></param>
-		/// <param name="serviceCreateDto"></param>
-		/// <returns></returns>
-		[HttpPost]
-		public ActionResult CreateService(int userId, ServiceCreateDto serviceCreateDto)
-		{
-			// TODO: validate user is logged in
-
-			// TODO: check if category exists
-
-			var serviceModel = _mapper.Map<Service>(serviceCreateDto);
-
-			_repository.CreateService(userId, serviceModel);
-			_repository.SaveChanges();
-
-			var serviceReadDto = _mapper.Map<ServiceReadDto>(serviceModel);
-
-			return CreatedAtRoute(
-				nameof(GetService),
-				new { userId = userId, serviceId = serviceReadDto.Id },
-				serviceReadDto
-			);
-		}
-
-		/// <summary>
 		/// Update service
 		/// </summary>
 		/// <param name="userId"></param>
@@ -119,7 +127,7 @@ namespace Services.Controllers
 		/// <param name="serviceId"></param>
 		/// <returns></returns>
 		[HttpDelete("{serviceId}")]
-		public ActionResult<IEnumerable<ServiceReadDto>> DeleteService(int userId, int serviceId)
+		public ActionResult DeleteService(int userId, int serviceId)
 		{
 			// TODO: validate user is logged in (JWT)
 			// TODO: validate user is owner (if not unauthorized)

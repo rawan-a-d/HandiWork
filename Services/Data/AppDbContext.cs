@@ -11,7 +11,7 @@ namespace Services.Data
 		}
 
 		public DbSet<Service> Services { get; set; }
-		public DbSet<ServiceCategory> ServicesCategories { get; set; }
+		public DbSet<ServiceCategory> ServiceCategories { get; set; }
 		public DbSet<User> Users { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

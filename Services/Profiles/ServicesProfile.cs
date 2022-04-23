@@ -12,6 +12,11 @@ namespace Services.Profiles
 			CreateMap<Service, ServiceReadDto>();
 			CreateMap<ServiceCreateDto, Service>();
 			CreateMap<ServiceUpdateDto, Service>();
+
+			CreateMap<ServiceCategory, ServiceCategoryReadDto>();
+			CreateMap<ServiceCategoryCreateDto, ServiceCategory>();
+			CreateMap<ServiceCategoryUpdateDto, ServiceCategory>();
+
 			CreateMap<UserPublishedDto, User>()
 				.ForMember(dest => dest.ExternalId, opt =>
 					opt.MapFrom(src => src.Id)

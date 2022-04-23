@@ -16,7 +16,7 @@ namespace Users.Data
 		private static void SeedData(AppDbContext context)
 		{
 			// if no data
-			if (!context.Users.Any() && !context.ServicesCategories.Any() && !context.Services.Any())
+			if (!context.Users.Any() && !context.ServiceCategories.Any() && !context.Services.Any())
 			{
 				Console.WriteLine("--> Seeding data...");
 
@@ -26,7 +26,7 @@ namespace Users.Data
 					new User() { Name = "Ranim", ExternalId = 3 }
 				);
 
-				context.ServicesCategories.AddRange(
+				context.ServiceCategories.AddRange(
 					new ServiceCategory() { Name = "Painting" },
 					new ServiceCategory() { Name = "Install Laminaat" },
 					new ServiceCategory() { Name = "Plumbing" }

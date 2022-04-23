@@ -4,6 +4,7 @@ namespace Services.Models
 {
 	public class ServiceCategory
 	{
+		[Key]
 		[Required]
 		public int Id { get; set; }
 
