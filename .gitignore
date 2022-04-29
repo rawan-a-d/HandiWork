@@ -455,7 +455,15 @@ $RECYCLE.BIN/
 **/.vscode/*
 
 
-## App settings (added)
+## App settings
 appsettings.json
 appsettings.Development.json
+appsettings.Production.json
 /.vscode/settings.json
+
+
+README.md
+
+# MessagingModels
+/MessagingModels/HandiWork.MessagingModels.*.nupkg
+/MessagingModels/MessagingModels.nuspec

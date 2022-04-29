@@ -1,4 +1,6 @@
 using AutoMapper;
+using MassTransit;
+using MessagingModels;
 using Microsoft.AspNetCore.Mvc;
 using Users.AsyncDataServices;
 using Users.Data;
@@ -14,16 +16,19 @@ namespace Users.Controllers
 		private readonly IUserRepo _repository;
 		private readonly IMapper _mapper;
 		private readonly IMessageBusClient _messageBusClient;
+		private readonly IPublishEndpoint _publishEndPoint;
 
 		public UsersController(
 			IUserRepo repository,
 			IMapper mapper,
-			IMessageBusClient messageBusClient
+			IMessageBusClient messageBusClient,
+			IPublishEndpoint publishEndPoint
 		)
 		{
 			_repository = repository;
 			_mapper = mapper;
 			_messageBusClient = messageBusClient;
+			_publishEndPoint = publishEndPoint;
 		}
 
 		[HttpGet]
@@ -49,7 +54,7 @@ namespace Users.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public ActionResult<UserReadDto> UpdateUser(int id, UserUpdateDto userUpdateDto)
+		public async Task<ActionResult> UpdateUser(int id, UserUpdateDto userUpdateDto)
 		{
 			if (!_repository.UserExists(id))
 			{
@@ -73,7 +78,8 @@ namespace Users.Controllers
 				var userPublishedDto = _mapper.Map<UserPublishedDto>(userReadDto);
 				userPublishedDto.Event = "User_Updated";
 
-				_messageBusClient.PublishUpdatedUser(userPublishedDto);
+				//_messageBusClient.PublishUpdatedUser(userPublishedDto);
+				await _publishEndPoint.Publish<UserUpdated>(userPublishedDto);
 			}
 			catch (Exception ex)
 			{

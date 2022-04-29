@@ -65,6 +65,8 @@ namespace Services.Controllers
 
 			var services = _mapper.Map<IEnumerable<ServiceReadDto>>(_repository.GetServicesForUser(userId));
 
+			//"dfkgc".StartsWithUpper()
+
 			return Ok(services);
 		}
 
