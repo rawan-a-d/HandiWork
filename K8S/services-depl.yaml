@@ -1,0 +1,39 @@
+# Deployment of a container into a pod
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: services-depl
+spec:
+  replicas: 1
+  # select the template
+  selector:
+    matchLabels:
+      app: services
+  # define the pod and the container we want to use
+  template:
+    metadata:
+      labels:
+        app: services
+    spec:
+      containers:
+        - name: services
+          image: rawanad/handiwork-services
+          ports:
+            - containerPort: 80
+          resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: services-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: services
+  ports:
+    - name: services
+      protocol: TCP
+      # Cluster IP port
+      # port used by other objects
+      port: 80
+      targetPort: 80
