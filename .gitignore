@@ -467,3 +467,6 @@ README.md
 # MessagingModels
 /MessagingModels/HandiWork.MessagingModels.*.nupkg
 /MessagingModels/MessagingModels.nuspec
+
+# Migrations
+/Auth/Migrations
