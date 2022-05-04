@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Auth.Dtos;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -34,7 +36,11 @@ namespace Auth.Controllers
 			_mapper = mapper;
 		}
 
-
+		/// <summary>
+		/// Register
+		/// </summary>
+		/// <param name="userCreateDto"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[Route("Register")]
 		public async Task<IActionResult> Register([FromBody] UserCreateDto userCreateDto)
@@ -47,7 +53,6 @@ namespace Auth.Controllers
 				return BadRequest(new AuthResult()
 				{
 					Errors = new List<string> {
-						// give more generic error message
 						"Email already in use"
 					},
 					Success = false
@@ -55,7 +60,6 @@ namespace Auth.Controllers
 			}
 
 			// create user
-			//var newUser = new IdentityUser() { Email = user.Email, UserName = user.Email };
 			var newUser = _mapper.Map<IdentityUser>(userCreateDto);
 
 			var isCreated = await _userManager.CreateAsync(newUser, userCreateDto.Password);
@@ -78,6 +82,11 @@ namespace Auth.Controllers
 			});
 		}
 
+		/// <summary>
+		/// Login
+		/// </summary>
+		/// <param name="userLoginDto"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[Route("Login")]
 		public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
@@ -89,7 +98,6 @@ namespace Auth.Controllers
 				return BadRequest(new AuthResult()
 				{
 					Errors = new List<string> {
-						// give more generic error message
 						"Invalid login request"
 					},
 					Success = false
@@ -103,7 +111,6 @@ namespace Auth.Controllers
 				return BadRequest(new AuthResult()
 				{
 					Errors = new List<string> {
-						// give more generic error message
 						"Invalid login request"
 					},
 					Success = false
@@ -115,6 +122,142 @@ namespace Auth.Controllers
 			return Ok(authResult);
 		}
 
+		/// <summary>
+		/// Create new role
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("Roles")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		public async Task<IActionResult> CreateRole([FromBody] RoleCreateDto roleCreateDto)
+		{
+			// check if role already exists
+			var roleExists = await _roleManager.RoleExistsAsync(roleCreateDto.Name);
+
+			if (!roleExists)
+			{
+				var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleCreateDto.Name));
+
+				// check if role was added successfully
+				if (roleResult.Succeeded)
+				{
+					_logger.LogInformation($"Role {roleCreateDto.Name} has been added successfully");
+					return Ok($"Role {roleCreateDto.Name} has been added successfully");
+				}
+
+				_logger.LogInformation($"Role {roleCreateDto.Name} has not been added successfully");
+				return BadRequest($"Role {roleCreateDto.Name} has not been added successfully");
+			}
+
+			_logger.LogInformation($"Role {roleCreateDto.Name} already exists");
+			return Conflict($"Role {roleCreateDto.Name} already exists");
+		}
+
+		/// <summary>
+		/// Add user to role
+		/// </summary>
+		/// <param name="email"></param>
+		/// <param name="roleName"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("AddUserToRole")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		public async Task<IActionResult> AddUserToRole([FromBody] RoleUserDto roleUserDto)
+		{
+			// check if user exists
+			var user = await _userManager.FindByEmailAsync(roleUserDto.Email);
+
+			if (user == null)
+			{
+				_logger.LogInformation($"User with email {roleUserDto.Email} does not exist");
+				return BadRequest($"User with email {roleUserDto.Email} does not exist");
+			}
+
+			// check if role exists
+			var roleExists = await _roleManager.RoleExistsAsync(roleUserDto.RoleName);
+
+			if (!roleExists)
+			{
+				_logger.LogInformation($"Role {roleUserDto.RoleName} does not exist");
+				return BadRequest($"Role {roleUserDto.RoleName} does not exist");
+			}
+
+			// check if role is already assigned to the user
+			var isInRole = await _userManager.IsInRoleAsync(user, roleUserDto.RoleName);
+
+			if (isInRole)
+			{
+				_logger.LogInformation($"Role {roleUserDto.RoleName} is already assigned to user with email {roleUserDto.Email}");
+				return Conflict($"Role {roleUserDto.RoleName} is already assigned to user with email {roleUserDto.Email}");
+			}
+
+			// check if user assigned to the role successfully
+			var result = await _userManager.AddToRoleAsync(user, roleUserDto.RoleName);
+
+			if (result.Succeeded)
+			{
+				return Ok($"Success, user with email {roleUserDto.Email} has been added to role {roleUserDto.RoleName}");
+			}
+
+			_logger.LogInformation($"User with email {roleUserDto.Email} was not added to role {roleUserDto.RoleName}");
+			return BadRequest($"User with email {roleUserDto.Email} was not added to role {roleUserDto.RoleName}");
+		}
+
+		/// <summary>
+		/// Remove user from role
+		/// </summary>
+		/// <param name="email"></param>
+		/// <param name="roleName"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("RemoveUserFromRole")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		public async Task<IActionResult> RemoveUserFromRole([FromBody] RoleUserDto roleUserDto)
+		{
+			// check if user exists
+			var user = await _userManager.FindByEmailAsync(roleUserDto.Email);
+
+			if (user == null)
+			{
+				_logger.LogInformation($"User with email {roleUserDto.Email} does not exist");
+				return BadRequest($"User with email {roleUserDto.Email} does not exist");
+			}
+
+			// check is role exists
+			var roleExists = await _roleManager.RoleExistsAsync(roleUserDto.RoleName);
+
+			if (!roleExists)
+			{
+				_logger.LogInformation($"Role {roleUserDto.RoleName} does not exist");
+				return BadRequest($"Role {roleUserDto.RoleName} does not exist");
+			}
+
+			// check if role is assigned to the user
+			var isInRole = await _userManager.IsInRoleAsync(user, roleUserDto.RoleName);
+
+			if (!isInRole)
+			{
+				_logger.LogInformation($"Role {roleUserDto.RoleName} is not assigned to user with email {roleUserDto.Email}");
+				return BadRequest($"Role {roleUserDto.RoleName} is not assigned to user with email {roleUserDto.Email}");
+			}
+
+			// remove role
+			var result = await _userManager.RemoveFromRoleAsync(user, roleUserDto.RoleName);
+
+			if (result.Succeeded)
+			{
+				return Ok($"User with email {roleUserDto.Email} has been removed from role {roleUserDto.RoleName}");
+			}
+
+			return BadRequest($"Unable to remove User with email {roleUserDto.Email} from role {roleUserDto.RoleName}");
+		}
+
+		/// <summary>
+		/// Generate JWT token
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
 		private async Task<AuthResult> GenerateJwtToken(IdentityUser user)
 		{
 			var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -130,7 +273,10 @@ namespace Auth.Controllers
 				Subject = new ClaimsIdentity(claims),
 				Expires = DateTime.UtcNow.AddHours(6),
 				// sigining credentials (type of algorithm used to encrypt token)
-				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+				SigningCredentials = new SigningCredentials(
+					new SymmetricSecurityKey(key),
+					SecurityAlgorithms.HmacSha256Signature
+				)
 			};
 
 			// security token
@@ -144,7 +290,11 @@ namespace Auth.Controllers
 			};
 		}
 
-		// Get all the valid claims for the user
+		/// <summary>
+		/// Get all the valid claims for the user
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
 		private async Task<List<Claim>> GetAllValidClaims(IdentityUser user)
 		{
 			// generic list of claims
