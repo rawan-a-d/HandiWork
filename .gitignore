@@ -470,6 +470,7 @@ README.md
 
 # Migrations
 /Auth/Migrations
+/Users/Migrations
 
 # K8S
 /K8S/DB

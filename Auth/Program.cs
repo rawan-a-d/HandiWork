@@ -16,7 +16,7 @@ if (builder.Environment.IsProduction())
 	// Database context - SQL server
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion"))
+		opt.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"))
 	);
 }
 else

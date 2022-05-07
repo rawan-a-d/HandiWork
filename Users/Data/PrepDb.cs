@@ -5,47 +5,36 @@ namespace Users.Data
 {
 	public static class PrepDb
 	{
-		public static void PrepPopulation(IApplicationBuilder app, bool isProd)
+		public static void PrepPopulation(IApplicationBuilder app, bool isDevelopment)
 		{
 			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{
-				SeedData(serviceScope.ServiceProvider.GetService<AppDbContext>(), isProd);
+				SeedData(serviceScope.ServiceProvider.GetService<AppDbContext>(), isDevelopment);
 			}
 		}
 
-		private static void SeedData(AppDbContext context, bool isProd)
+		private static void SeedData(AppDbContext context, bool isDevelopment)
 		{
 			// run migration if we are in production
-			if (isProd)
+			if (isDevelopment)
 			{
-				Console.WriteLine("--> Attempting to apply migrations...");
-
-				try
+				// if no data
+				if (!context.Users.Any())
 				{
-					context.Database.Migrate();
+					Console.WriteLine("--> Seeding data...");
+
+					context.Users.AddRange(
+						new User() { Name = "Rawan", Email = "rawan@gmail.com", Phone = "087667283", Address = "4783 GW 138" },
+						new User() { Name = "Omar", Email = "omar@gmail.com", Phone = "087667283", Address = "4783 GW 138" },
+						new User() { Name = "Ranim", Email = "ranim@gmail.com", Phone = "087667283", Address = "4783 GW 138" }
+					);
+
+					context.SaveChanges();
 				}
-				catch (Exception ex)
+				else
 				{
-					Console.WriteLine($"--> Could not run migrations: {ex.Message}");
+					Console.WriteLine("--> We already have data");
 				}
-			}
-
-			// if no data
-			if (!context.Users.Any())
-			{
-				Console.WriteLine("--> Seeding data...");
-
-				context.Users.AddRange(
-					new User() { Name = "Rawan", Email = "rawan@gmail.com", Phone = "087667283", Address = "4783 GW 138" },
-					new User() { Name = "Omar", Email = "omar@gmail.com", Phone = "087667283", Address = "4783 GW 138" },
-					new User() { Name = "Ranim", Email = "ranim@gmail.com", Phone = "087667283", Address = "4783 GW 138" }
-				);
-
-				context.SaveChanges();
-			}
-			else
-			{
-				Console.WriteLine("--> We already have data");
 			}
 		}
 	}

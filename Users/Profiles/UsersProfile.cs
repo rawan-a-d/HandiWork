@@ -1,4 +1,5 @@
 using AutoMapper;
+using MessagingModels;
 using Users.Dtos;
 using Users.Models;
 
@@ -12,7 +13,7 @@ namespace Users.Profiles
 			// Source -> Target
 			CreateMap<User, UserReadDto>();
 			CreateMap<UserUpdateDto, User>();
-			CreateMap<UserReadDto, UserPublishedDto>();
+			CreateMap<UserCreated, User>();
 		}
 	}
 }

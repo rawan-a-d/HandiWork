@@ -2,7 +2,6 @@ using AutoMapper;
 using MassTransit;
 using MessagingModels;
 using Microsoft.AspNetCore.Mvc;
-using Users.AsyncDataServices;
 using Users.Data;
 using Users.Dtos;
 using Users.Models;
@@ -15,19 +14,16 @@ namespace Users.Controllers
 	{
 		private readonly IUserRepo _repository;
 		private readonly IMapper _mapper;
-		private readonly IMessageBusClient _messageBusClient;
 		private readonly IPublishEndpoint _publishEndPoint;
 
 		public UsersController(
 			IUserRepo repository,
 			IMapper mapper,
-			IMessageBusClient messageBusClient,
 			IPublishEndpoint publishEndPoint
 		)
 		{
 			_repository = repository;
 			_mapper = mapper;
-			_messageBusClient = messageBusClient;
 			_publishEndPoint = publishEndPoint;
 		}
 
@@ -70,16 +66,14 @@ namespace Users.Controllers
 			// save to db
 			_repository.SaveChanges();
 
-			// get UserReadDto and return to user
-			var userReadDto = _mapper.Map<UserReadDto>(userModel);
-
 			try
 			{
-				var userPublishedDto = _mapper.Map<UserPublishedDto>(userReadDto);
-				userPublishedDto.Event = "User_Updated";
-
-				//_messageBusClient.PublishUpdatedUser(userPublishedDto);
-				await _publishEndPoint.Publish<UserUpdated>(userPublishedDto);
+				// Publish UserUpdate event
+				await _publishEndPoint.Publish<UserUpdated>(new
+				{
+					Id = userModel.Id,
+					Name = userModel.Name
+				});
 			}
 			catch (Exception ex)
 			{

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Users.AsyncDataServices;
 using Users.Data;
 using MassTransit;
 using Users.Consumers;
@@ -15,7 +14,7 @@ if (builder.Environment.IsProduction())
 	// Database context - SQL server
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+		opt.UseSqlServer(builder.Configuration.GetConnectionString("UsersDB"))
 	);
 }
 else
@@ -30,9 +29,6 @@ else
 
 // User Repo
 builder.Services.AddScoped<IUserRepo, UserRepo>();
-
-// RabbitMQ
-builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -79,9 +75,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
 // Prep data
-PrepDb.PrepPopulation(app, app.Environment.IsProduction());
-
+PrepDb.PrepPopulation(app, app.Environment.IsDevelopment());
 
 app.Run();
