@@ -6,18 +6,26 @@ using MassTransit;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 // ----------------
 // Database context
-builder.Services.AddDbContext<AppDbContext>(opt =>
-	// specify database type and name
-	opt.UseInMemoryDatabase("InMem")
-);
+if (builder.Environment.IsProduction())
+{
+	Console.WriteLine("--> Using SqlServer Db");
+	// Database context - SQL server
+	builder.Services.AddDbContext<AppDbContext>(opt =>
+		// specify database type and name
+		opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+	);
+}
+else
+{
+	Console.WriteLine("--> Using InMem Db");
+	// Database context - In memory
+	builder.Services.AddDbContext<AppDbContext>(opt =>
+		// specify database type and name
+		opt.UseInMemoryDatabase("InMem")
+	);
+}
 
 // User Repo
 builder.Services.AddScoped<IUserRepo, UserRepo>();
@@ -41,6 +49,12 @@ builder.Services.AddMassTransit(config =>
 
 // ----------------
 
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,7 +70,7 @@ app.MapControllers();
 
 
 // Prep data
-PrepDb.PrepPopulation(app);
+PrepDb.PrepPopulation(app, app.Environment.IsProduction());
 
 
 app.Run();

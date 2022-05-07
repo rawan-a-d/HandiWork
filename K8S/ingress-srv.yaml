@@ -45,3 +45,10 @@ spec:
                 name: services-clusterip-srv
                 port:
                   number: 80
+          - path: /api/auth/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-clusterip-srv
+                port:
+                  number: 80

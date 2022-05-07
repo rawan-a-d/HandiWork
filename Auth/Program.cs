@@ -9,14 +9,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // ----------------------
-// DB
-builder.Services.AddDbContext<AppDbContext>(opt =>
+if (builder.Environment.IsProduction())
+{
+	Console.WriteLine("--> Using SqlServer Db");
+	// Database context - SQL server
+	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		//opt.UseSqlServer(
-		//	builder.Configuration.GetConnectionString("DefaultConnection")
-		//)
+		opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion"))
+	);
+}
+else
+{
+	Console.WriteLine("--> Using InMem Db");
+	// Database context - In memory
+	builder.Services.AddDbContext<AppDbContext>(opt =>
+		// specify database type and name
 		opt.UseInMemoryDatabase("InMem")
-);
+	);
+}
 
 // Authentication
 builder.Services.AddAuthentication(options =>
@@ -80,6 +90,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Prep data
-PrepDb.PrepPopulation(app);
+PrepDb.PrepPopulation(app, app.Environment.IsDevelopment());
 
 app.Run();

@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: services-depl
 spec:
-  replicas: 3
+  replicas: 2
   # select the template
   selector:
     matchLabels:
