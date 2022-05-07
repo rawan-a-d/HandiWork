@@ -37,7 +37,7 @@ const appRoutes: Routes = [
 	{
 		path: 'moderator',
 		component: ModeratorComponent
-	},
+	}
 ]
 
 @NgModule({
