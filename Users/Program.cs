@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Users.AsyncDataServices;
 using Users.Data;
 using MassTransit;
+using Users.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,11 +40,21 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // MassTransit
 builder.Services.AddMassTransit(config =>
 {
+	// register consumer
+	config.AddConsumer<UserConsumer>();
+
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
-		//cfg.Host("amqp://guest:guest@localhost:5672");
 		Console.WriteLine($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
 		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+
+		// This is the consumer
+		// creates exchange and queue with this name
+		cfg.ReceiveEndpoint("Users_user-endpoint", c =>
+		{
+			// define the consumer class
+			c.ConfigureConsumer<UserConsumer>(ctx);
+		});
 	});
 });
 

@@ -3,12 +3,14 @@ using System.Security.Claims;
 using System.Text;
 using Auth.Dtos;
 using AutoMapper;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MessagingModels;
 
 namespace Auth.Controllers
 {
@@ -21,19 +23,22 @@ namespace Auth.Controllers
 		private readonly ILogger<AuthController> _logger;
 		private readonly IConfiguration _configuration;
 		private readonly IMapper _mapper;
+		private readonly IPublishEndpoint _publishEndPoint;
 
 		public AuthController(
 				UserManager<IdentityUser> userManager,
 				RoleManager<IdentityRole> roleManager,
 				ILogger<AuthController> logger,
 				IConfiguration configuration,
-				IMapper mapper)
+				IMapper mapper,
+				IPublishEndpoint publishEndPoint)
 		{
 			_userManager = userManager;
 			_roleManager = roleManager;
 			_logger = logger;
 			_configuration = configuration;
 			_mapper = mapper;
+			_publishEndPoint = publishEndPoint;
 		}
 
 		/// <summary>
@@ -71,6 +76,14 @@ namespace Auth.Controllers
 
 				// generate token
 				var authResult = await GenerateJwtToken(newUser);
+
+				// publish UserCreated event
+				await _publishEndPoint.Publish<UserCreated>(new
+				{
+					Id = newUser.Id,
+					Name = newUser.UserName,
+					Email = newUser.Email
+				});
 
 				return Ok(authResult);
 			}

@@ -1,5 +1,6 @@
 using System.Text;
 using Auth.Data;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -67,6 +68,17 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// MassTransit
+builder.Services.AddMassTransit(config =>
+{
+	config.UsingRabbitMq((ctx, cfg) =>
+	{
+		//cfg.Host("amqp://guest:guest@localhost:5672");
+		Console.WriteLine($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+	});
+});
 // ----------------------
 
 
