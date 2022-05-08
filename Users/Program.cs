@@ -54,6 +54,7 @@ builder.Services.AddMassTransit(config =>
 	});
 });
 
+// Cors
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
@@ -64,7 +65,9 @@ builder.Services.AddCors(options =>
 			policy.WithOrigins(
 				"http://localhost:4200",
 				"http://localhost:80"
-			);
+			)
+			.AllowAnyMethod()
+			.AllowAnyHeader();
 		});
 });
 // ----------------

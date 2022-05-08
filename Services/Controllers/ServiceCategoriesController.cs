@@ -22,7 +22,7 @@ namespace Services.Controllers
 		/// <summary>
 		/// Create new service category
 		/// </summary>
-		/// <param name="id"></param>
+		/// <param name="serviceCategoryCreateDto"></param>
 		/// <returns></returns>
 		[HttpPost]
 		public ActionResult<ServiceCategoryReadDto> CreateServiceCategory(ServiceCategoryCreateDto serviceCategoryCreateDto)
@@ -50,7 +50,6 @@ namespace Services.Controllers
 		/// <summary>
 		/// Get service categories
 		/// </summary>
-		/// <param name="id"></param>
 		/// <returns></returns>
 		[HttpGet]
 		public ActionResult<IEnumerable<ServiceCategoryReadDto>> GetServiceCategories()
@@ -104,7 +103,7 @@ namespace Services.Controllers
 			// save to db
 			_repository.SaveChanges();
 
-			return NoContent();
+			return NoContent();			
 		}
 
 		/// <summary>

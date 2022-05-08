@@ -3,15 +3,17 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from '../service-categories/service-categories.component';
 
 @Component({
-	selector: 'app-new-service-category-dialog',
-	templateUrl: './new-service-category-dialog.component.html',
-	styleUrls: ['./new-service-category-dialog.component.css']
+	selector: 'app-manage-service-category-dialog',
+	templateUrl: './manage-service-category-dialog.component.html',
+	styleUrls: ['./manage-service-category-dialog.component.css']
 })
-export class NewServiceCategoryDialogComponent implements OnInit {
+export class ManageServiceCategoryDialogComponent implements OnInit {
+
 	constructor(
-		public dialogRef: MatDialogRef<NewServiceCategoryDialogComponent>,
+		public dialogRef: MatDialogRef<ManageServiceCategoryDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: DialogData,
-	) { }
+	) {
+	}
 
 	ngOnInit(): void {
 	}

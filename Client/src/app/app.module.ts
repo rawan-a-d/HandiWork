@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,13 +23,14 @@ import { ImageSliderComponent } from './image-slider/image-slider.component';
 import { ModeratorComponent } from './moderator/moderator.component';
 import { UsersComponent } from './moderator/users/users.component';
 import { ServiceCategoriesComponent } from './moderator/service-categories/service-categories.component';
-import { NewServiceCategoryDialogComponent } from './moderator/new-service-category-dialog/new-service-category-dialog.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { PossibleServicesComponent } from './home/possible-services/possible-services.component';
 import { SearchResultComponent } from './home/search-result/search-result.component';
 import { ManageSkillsComponent } from './profile/manage-skills/manage-skills.component';
 import { ManageSkillDialogComponent } from './profile/manage-skill-dialog/manage-skill-dialog.component';
+import { AuthHttpInterceptor } from './services/auth-http.interceptor';
+import { ManageServiceCategoryDialogComponent } from './moderator/manage-service-category-dialog/manage-service-category-dialog.component';
 
 const matModules = [
 	MatFormFieldModule,
@@ -54,7 +55,7 @@ const matModules = [
 		ModeratorComponent,
 		UsersComponent,
 		ServiceCategoriesComponent,
-		NewServiceCategoryDialogComponent,
+		ManageServiceCategoryDialogComponent,
 		NavbarComponent,
 		HomeComponent,
 		PossibleServicesComponent,
@@ -73,7 +74,13 @@ const matModules = [
 	exports: [
 		matModules
 	],
-	providers: [],
+	providers: [
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: AuthHttpInterceptor,
+			multi: true
+		},
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

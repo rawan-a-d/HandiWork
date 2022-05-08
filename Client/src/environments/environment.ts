@@ -6,7 +6,7 @@ export const environment = {
 	production: false,
 	apiUrlUsers: 'http://localhost:5000/api/users',
 	apiUrlServices: 'http://localhost:6000/api/services',
-	apiUrlServiceCategories: 'http://localhost:6000/api/serviceCategories',
+	apiUrlServiceCategories: 'http://localhost:8000/api/servicecategories',
 	apiUrlAuth: 'http://localhost:7000/api/auth'
 };
 
