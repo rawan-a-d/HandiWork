@@ -1,5 +1,9 @@
-<form class="login-form">
+<form class="login-form" #f="ngForm" (ngSubmit)="login(f.value)">
 	<h2 class="login-form__heading">Login</h2>
+
+	<div *ngIf="invalidLogin" class="invalid-login">
+		Invalid username and/or password
+	</div>
 
 	<mat-form-field appearance="fill">
 		<mat-label>Email address</mat-label>
@@ -19,6 +23,6 @@
 
 	<div id="login-form__no-account">
 		Don't have an account yet?
-		<span id="login-form__regiser-now"><u>Register now</u></span>
+		<span id="login-form__regiser-now" routerLink="/register"><u>Register now</u></span>
 	</div>
 </form>

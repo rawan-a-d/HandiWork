@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -14,6 +14,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -29,7 +30,7 @@ import { PossibleServicesComponent } from './home/possible-services/possible-ser
 import { SearchResultComponent } from './home/search-result/search-result.component';
 import { ManageSkillsComponent } from './profile/manage-skills/manage-skills.component';
 import { ManageSkillDialogComponent } from './profile/manage-skill-dialog/manage-skill-dialog.component';
-import { AuthHttpInterceptor } from './services/auth-http.interceptor';
+import { AuthHttpInterceptor } from './_interceptors/auth-http.interceptor';
 import { ManageServiceCategoryDialogComponent } from './moderator/manage-service-category-dialog/manage-service-category-dialog.component';
 
 const matModules = [
@@ -42,7 +43,8 @@ const matModules = [
 	MatTabsModule,
 	MatDialogModule,
 	MatToolbarModule,
-	MatCardModule
+	MatCardModule,
+	MatPasswordStrengthModule
 ];
 
 @NgModule({
@@ -67,6 +69,7 @@ const matModules = [
 		BrowserModule,
 		BrowserAnimationsModule,
 		FormsModule,
+		ReactiveFormsModule,
 		HttpClientModule,
 		matModules,
 		AppRoutingModule

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ServiceCategory } from 'src/app/models/ServiceCategory';
-import { ServiceCategoriesService } from 'src/app/services/service-categories.service';
+import { ServiceCategory } from 'src/app/_models/ServiceCategory';
+import { ServiceCategoriesService } from 'src/app/_services/service-categories.service';
 import { ManageServiceCategoryDialogComponent } from '../manage-service-category-dialog/manage-service-category-dialog.component';
 
 export interface DialogData {

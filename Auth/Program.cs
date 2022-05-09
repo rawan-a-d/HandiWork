@@ -79,6 +79,23 @@ builder.Services.AddMassTransit(config =>
 		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
 	});
 });
+
+// Cors
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(name: MyAllowSpecificOrigins,
+		policy =>
+		{
+			policy.WithOrigins(
+				"http://localhost:4200",
+				"http://localhost:80"
+			)
+			.AllowAnyMethod()
+			.AllowAnyHeader();
+		});
+});
 // ----------------------
 
 
@@ -95,6 +112,8 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
