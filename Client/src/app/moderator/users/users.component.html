@@ -10,7 +10,7 @@
 			<th class="table__row-header">Delete</th>
 		</tr>
 	</thead>
-	<tbody class="table__body" *ngFor="let user of users">
+	<tbody class="table__body" *ngFor="let user of users; let i = index; trackBy: trackUser">
 		<tr class="table__row">
 			<td class="table__row-data">{{user.id}}</td>
 			<td class="table__row-data">{{user.name}}</td>
@@ -23,23 +23,8 @@
 				<button mat-stroked-button color='primary'>user</button>
 			</td>
 			<td class="table__row-data">
-				<button mat-stroked-button color='warn'>Delete</button>
+				<button mat-stroked-button color='warn' (click)="delete(user.id)">Delete</button>
 			</td>
 		</tr>
-		<!--<tr class="table__row">
-			<td class="table__row-data">1</td>
-			<td class="table__row-data">Omar</td>
-			<td class="table__row-data">omar@gmail.com</td>
-			<td class="table__row-data">User</td>
-			<td class="table__row-data">
-				<button mat-stroked-button color='primary'>moderator</button>
-			</td>
-			<td class="table__row-data">
-				<button mat-stroked-button color='primary'>user</button>
-			</td>
-			<td class="table__row-data">
-				<button mat-stroked-button color='warn'>Delete</button>
-			</td>
-		</tr>-->
 	</tbody>
 </table>

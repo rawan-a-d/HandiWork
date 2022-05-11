@@ -8,7 +8,7 @@ import { DataService } from './data.service';
 })
 export class ServicesService extends DataService {
 
-	constructor(http: HttpClient) {
-		super(environment.apiUrlServices, http);
+	constructor(http: HttpClient) { // users/1/services
+		super(environment.apiUrlUsers, http);
 	}
 }

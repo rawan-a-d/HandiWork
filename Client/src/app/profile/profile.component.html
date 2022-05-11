@@ -1,11 +1,11 @@
 <div class="container">
-	<div class="container__item">
+	<div class="container__item" *ngIf="profile">
 		<div class="container__row container__personal-info">
 			<img class="container__profile-image"
 				src="https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png">
 		</div>
 		<div class="container__row container__personal-info">
-			<h2>John doe</h2>
+			<h2>{{profile.name}}</h2>
 		</div>
 		<div class="container__row container__personal-info">
 			<p>
@@ -24,7 +24,7 @@
 		</div>
 		<div class="container__row container__personal-info">
 			<h3>Contact details</h3>
-			067483343
+			{{profile.phone}}
 		</div>
 	</div>
 	<div class="container__item">
