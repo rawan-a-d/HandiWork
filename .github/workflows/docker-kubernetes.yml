@@ -54,9 +54,9 @@ jobs:
 #           # kubectl command to run, without the kubectl, e.g. `get pods`
 #           command: apply -f K8S/*
           
-      - name: Deploy to cluster
-        uses: myrotvorets/kubectl-action@2.0.0
-        with:
-          config: ${{ secrets.KUBE_CONFIG }}
-          version: latest
-          args: apply -f K8S
+#       - name: Deploy to cluster
+#         uses: myrotvorets/kubectl-action@2.0.0
+#         with:
+#           config: ${{ secrets.KUBE_CONFIG }}
+#           version: latest
+#           args: apply -f K8S
