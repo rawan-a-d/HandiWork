@@ -50,6 +50,6 @@ jobs:
           # kubectl version, e.g. `v1.21.0`, defaults to latest
           version: latest
           # kube config data
-          config: ${{ secrets.KUBE_CONFIG }}
+          #config: ${{ secrets.KUBE_CONFIG }}
           # kubectl command to run, without the kubectl, e.g. `get pods`
           command: apply -f K8S/*
