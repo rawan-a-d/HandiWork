@@ -20,7 +20,7 @@ jobs:
         uses: docker/login-action@v2.0.0
         with:
           # Server address of Docker registry. If not set then will default to Docker Hub
-#           registry: ${{ secrets.DH_URL }}
+          # registry: ${{ secrets.DH_URL }}
           # Username used to log against the Docker registry
           username: ${{ secrets.DH_USERNAME }}
           # Password or personal access token used to log against the Docker registry
@@ -30,16 +30,16 @@ jobs:
 
       - name: Docker build and push, kubectl apply
         run: |
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }} .
+          docker build -f Users/Dockerfile -t ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }} .
           docker push ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }}
 
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }} .
+          docker build -f Services/Dockerfile -t ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }} .
           docker push ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }}
 
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }} .
+          docker build -f Auth/Dockerfile -t ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }} .
           docker push ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }}
 
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }} .
+          docker build -f Client/Dockerfile -t ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }} .
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }}
           
           kubectl apply -f K8S/*
