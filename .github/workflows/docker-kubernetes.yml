@@ -59,4 +59,4 @@ jobs:
         with:
           config: ${{ secrets.KUBE_CONFIG }}
           version: latest
-          args: apply -f K8S/*
+          args: apply -f K8S
