@@ -38,7 +38,7 @@ jobs:
           # kube config data
           config: ${{ secrets.KUBE_CONFIG }}
           # kubectl command to run, without the kubectl, e.g. `get pods`
-          # command: 
+          command: apply
 
       - name: Docker build and push, kubectl apply
         run: |
