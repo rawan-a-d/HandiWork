@@ -30,16 +30,16 @@ jobs:
 
       - name: Docker build and push, kubectl apply
         run: |
-          docker build -f Users/Dockerfile -t ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }} .
+          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }} -f Users/Dockerfile ./Users
           docker push ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }}
 
-          docker build -f Services/Dockerfile -t ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }} .
+          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }} -f Services/Dockerfile ./Services
           docker push ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }}
 
-          docker build -f Auth/Dockerfile -t ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }} .
+          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }} -f Auth/Dockerfile ./Auth
           docker push ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }}
 
-          docker build -f Client/Dockerfile -t ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }} .
+          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }} -f Client/Dockerfile ./Client
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }}
           
           kubectl apply -f K8S/*
