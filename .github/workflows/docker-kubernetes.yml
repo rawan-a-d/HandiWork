@@ -44,4 +44,21 @@ jobs:
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }}
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:latest
 
-          kubectl apply -f K8S/*
+#       - name: Kubernetes
+#         # You may pin to the exact commit or the version.
+#         # uses: steebchen/kubectl@bd911c0b014904226d4cbd571ec0f7b679c5bb7c
+#         uses: steebchen/kubectl@v2.0.0
+#         with:
+#           # kubectl version, e.g. `v1.21.0`, defaults to latest
+#           version: v1.21.0
+#           # kube config data
+#           config: ${{ secrets.KUBE_CONFIG }}
+#           # kubectl command to run, without the kubectl, e.g. `get pods`
+#           command: apply -f K8S/*
+
+#       - name: Deploy to cluster
+#         uses: myrotvorets/kubectl-action@2.0.0
+#         with:
+#           config: ${{ secrets.KUBE_CONFIG }}
+#           version: latest
+#           args: apply -f K8S
