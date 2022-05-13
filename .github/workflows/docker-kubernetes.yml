@@ -2,13 +2,11 @@ name: Docker Build and Push, Kubernetes start
 
 on:
   push:
-    branches: 
+    branches:
       - master
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -30,16 +28,20 @@ jobs:
 
       - name: Docker build and push, kubectl apply
         run: |
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }} -f Users/Dockerfile ./Users
+          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-users:latest -t ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }} -f Users/Dockerfile ./Users
           docker push ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }}
+          docker push ${{ secrets.DH_USERNAME }}/handiwork-users:latest
 
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }} -f Services/Dockerfile ./Services
+          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-services:latest -t ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }} -f Services/Dockerfile ./Services
           docker push ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }}
+          docker push ${{ secrets.DH_USERNAME }}/handiwork-services:latest
 
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }} -f Auth/Dockerfile ./Auth
+          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-auth:latest -t ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }} -f Auth/Dockerfile ./Auth
           docker push ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }}
+          docker push ${{ secrets.DH_USERNAME }}/handiwork-auth:latest
 
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }} -f Client/Dockerfile ./Client
+          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-client:latest -t ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }} -f Client/Dockerfile ./Client
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }}
-          
+          docker push ${{ secrets.DH_USERNAME }}/handiwork-client:latest
+
           kubectl apply -f K8S/*
