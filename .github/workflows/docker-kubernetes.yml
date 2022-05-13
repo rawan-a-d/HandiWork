@@ -1,4 +1,4 @@
-name: Docker Build and Push, Kubernetes start
+name: Docker Build and Push
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
           # Log out from the Docker registry at the end of a job
           logout: true
 
-      - name: Docker build and push, kubectl apply
+      - name: Docker build and push
         run: |
           docker build -t ${{ secrets.DH_USERNAME }}/handiwork-users:latest -t ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }} -f Users/Dockerfile ./Users
           docker push ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }}
