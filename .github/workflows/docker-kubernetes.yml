@@ -58,7 +58,7 @@ jobs:
           # TYPE of the new value to be updated
           mode: IMAGE_TAG
           # Name of the container
-          container-name: ${{ github.sha }}/handiwork-auth
+          container-name: ${{ secrets.DH_USERNAME }}/handiwork-auth
           # Path to the yaml file
           filepath: K8S/auth-depl.yaml 
           # Tag value for the new image
