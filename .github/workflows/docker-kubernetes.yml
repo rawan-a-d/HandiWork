@@ -50,6 +50,18 @@ jobs:
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }}
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:latest
 
+      - name: Update k8s image
+        # You may pin to the exact commit or the version.
+        # uses: Charlyzzz/update-k8s-image@1ed6b41d9b6db7d20e8fea8d9b0be57cc6cb9d5c
+        uses: Charlyzzz/update-k8s-image@v1.7.1
+        with:
+          # Location of the manifest that will be updated
+          manifest-path: K8S/auth-depl.yaml
+          # New image tag
+          new-image-tag: ${{github.sha}}
+          # Name of the container that references the image to replace
+          container-name: auth-depl.yaml
+
 #       - name: Kubernetes
 #         # You may pin to the exact commit or the version.
 #         # uses: steebchen/kubectl@bd911c0b014904226d4cbd571ec0f7b679c5bb7c
