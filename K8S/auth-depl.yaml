@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rawanad/handiwork-auth
+          image: rawanad/handiwork-auth:${{ github.sha }}
           resources: {}
           # Environment variables
           env:
