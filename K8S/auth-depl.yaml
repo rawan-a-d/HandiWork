@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-depl
+  annotations:
+    keel.sh/policy: all
 spec:
   replicas: 1
   # select the template
