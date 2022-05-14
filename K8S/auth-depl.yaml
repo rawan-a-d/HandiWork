@@ -21,7 +21,26 @@ spec:
         - name: auth
           image: rawanad/handiwork-auth
           resources: {}
-
+          # Environment variables
+          env:
+            # custom name (can be anything)
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  # group name
+                  name: auth
+                  # key name
+                  key: connectionstring
+            - name: JWT
+              valueFrom:
+                secretKeyRef:
+                  name: auth
+                  key: connectionstring
+            - name: RABBIT_MQ
+              valueFrom:
+                secretKeyRef:
+                  name: auth
+                  key: rabbitmq
 ---
 apiVersion: v1
 kind: Service

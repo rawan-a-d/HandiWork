@@ -472,5 +472,5 @@ README.md
 /Auth/Migrations
 /Users/Migrations
 
-# K8S
-/K8S/DB
+# Config
+Secrets

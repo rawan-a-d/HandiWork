@@ -16,7 +16,8 @@ if (builder.Environment.IsProduction())
 	// Database context - SQL server
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		opt.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"))
+		//opt.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"))
+		opt.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING"))
 	);
 }
 else
@@ -41,7 +42,8 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(jwt =>
 {
 	// how it should be encoded
-	var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Secret"]);
+	//var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Secret"]);
+	var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT"));
 
 	// jwt token settings
 	jwt.SaveToken = true;
@@ -75,8 +77,8 @@ builder.Services.AddMassTransit(config =>
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
 		//cfg.Host("amqp://guest:guest@localhost:5672");
-		Console.WriteLine($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
-		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+		//cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+		cfg.Host(Environment.GetEnvironmentVariable("RABBIT_MQ"));
 	});
 });
 
