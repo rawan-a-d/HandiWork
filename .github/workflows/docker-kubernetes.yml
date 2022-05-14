@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - master
+    # build and push the images only if one of the microservices changed
+    paths:
+      - "Auth"
+      - "Client"
+      - "Services"
+      - "Users"
 
 jobs:
   build:
