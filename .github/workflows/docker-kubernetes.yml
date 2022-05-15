@@ -26,7 +26,7 @@ jobs:
         uses: datreeio/action-datree@v1.0.0
         with:
           path: "K8S/*.yaml"
-          cliArguments: "--only-k8s-files"
+          cliArguments: "--only-k8s-files --ignore-missing-schemas"
 
   build:
     runs-on: ubuntu-latest
