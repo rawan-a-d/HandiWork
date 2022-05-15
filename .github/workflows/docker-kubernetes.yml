@@ -17,6 +17,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Datree CLI
+        # You may pin to the exact commit or the version.
+        # uses: datreeio/action-datree@3587b81449982c327052ca0f9dfcd6983194ed2e
+        uses: datreeio/action-datree@v1.0.0
+        with:
+          # the file/s to be tested
+          path: K8S
+          # the Datree CLI options to be used
+#           cliArguments: # optional
+#           # is the desired file a Helm chart?
+#           isHelmChart: # default is false
+#           # the Helm arguments to be used
+#           helmArguments: # optional
 
       - name: Docker Login
         # You may pin to the exact commit or the version.
