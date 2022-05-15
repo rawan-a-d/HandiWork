@@ -10,27 +10,30 @@ on:
     #  - "Client"
     #  - "Services"
     #  - "Users"
+    
+env:
+  DATREE_TOKEN: ${{ secrets.DATREE_TOKEN }} 
 
 jobs:
+  k8sPolicyCheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Run Datree Policy Check
+        uses: datreeio/action-datree@v1.0.0
+        with:
+          path: 'K8S/*.yaml'
+          cliArguments: '--only-k8s-files'
+
+
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Datree CLI
-        # You may pin to the exact commit or the version.
-        # uses: datreeio/action-datree@3587b81449982c327052ca0f9dfcd6983194ed2e
-        uses: datreeio/action-datree@v1.0.0
-        with:
-          # the file/s to be tested
-          path: K8S
-          # the Datree CLI options to be used
-#           cliArguments: # optional
-#           # is the desired file a Helm chart?
-#           isHelmChart: # default is false
-#           # the Helm arguments to be used
-#           helmArguments: # optional
 
       - name: Docker Login
         # You may pin to the exact commit or the version.
