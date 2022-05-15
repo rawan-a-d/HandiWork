@@ -1,0 +1,5 @@
+# place controller.yaml in this namespace
+namespace: bitnami-ss
+
+resources:
+  - controller.yaml

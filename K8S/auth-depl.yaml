@@ -50,18 +50,18 @@ spec:
               valueFrom:
                 secretKeyRef:
                   # group name
-                  name: auth
+                  name: auth-db-connection-secret
                   # key name
-                  key: connectionstring
+                  key: auth-db-connection
             - name: JWT
               valueFrom:
                 secretKeyRef:
-                  name: auth
-                  key: connectionstring
+                  name: jwt-secret
+                  key: jwt
             - name: RABBIT_MQ
               valueFrom:
                 secretKeyRef:
-                  name: auth
+                  name: rabbitmq-secret
                   key: rabbitmq
 ---
 apiVersion: v1
