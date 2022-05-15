@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rawanad/handiwork-auth:3a1b54ccffa4401d4a49ced3c6524587a27ec544
+          image: rawanad/handiwork-auth:c5588fda6b93155288c6dad8b0e9cbac1688d406
           resources: {}
           # Environment variables
           env:
