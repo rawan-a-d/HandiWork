@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     
     # run only if k8sPolicyCheck job was a success
-    needs: k8sPolicyCheck
+    #needs: k8sPolicyCheck
 
     steps:
       - uses: actions/checkout@v3
@@ -70,7 +70,7 @@ jobs:
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }}
           docker push ${{ secrets.DH_USERNAME }}/handiwork-client:latest  
 
-      - name: Update yaml files in place
+      - name: Update Auth yaml file in place
         # You may pin to the exact commit or the version.
         # uses: loveholidays/gitops-action-yaml-updater@c603741f5ab74071e3e73e2acfad4d66e529089c
         uses: loveholidays/gitops-action-yaml-updater@v1.0.0
@@ -83,7 +83,49 @@ jobs:
           filepath: K8S/auth-depl.yaml 
           # Tag value for the new image
           new-image-tag: ${{ github.sha }}
- 
+
+      - name: Update Users yaml file in place
+        # You may pin to the exact commit or the version.
+        # uses: loveholidays/gitops-action-yaml-updater@c603741f5ab74071e3e73e2acfad4d66e529089c
+        uses: loveholidays/gitops-action-yaml-updater@v1.0.0
+        with:
+          # TYPE of the new value to be updated
+          mode: IMAGE_TAG
+          # Name of the container
+          container-name: users
+          # Path to the yaml file
+          filepath: K8S/users-depl.yaml 
+          # Tag value for the new image
+          new-image-tag: ${{ github.sha }}
+
+      - name: Update Services yaml file in place
+        # You may pin to the exact commit or the version.
+        # uses: loveholidays/gitops-action-yaml-updater@c603741f5ab74071e3e73e2acfad4d66e529089c
+        uses: loveholidays/gitops-action-yaml-updater@v1.0.0
+        with:
+          # TYPE of the new value to be updated
+          mode: IMAGE_TAG
+          # Name of the container
+          container-name: services
+          # Path to the yaml file
+          filepath: K8S/services-depl.yaml 
+          # Tag value for the new image
+          new-image-tag: ${{ github.sha }}
+          
+      - name: Update Client yaml file in place
+        # You may pin to the exact commit or the version.
+        # uses: loveholidays/gitops-action-yaml-updater@c603741f5ab74071e3e73e2acfad4d66e529089c
+        uses: loveholidays/gitops-action-yaml-updater@v1.0.0
+        with:
+          # TYPE of the new value to be updated
+          mode: IMAGE_TAG
+          # Name of the container
+          container-name: client
+          # Path to the yaml file
+          filepath: K8S/client-depl.yaml 
+          # Tag value for the new image
+          new-image-tag: ${{ github.sha }}
+
       - name: Add & Commit
         # You may pin to the exact commit or the version.
         # uses: EndBug/add-and-commit@050a66787244b10a4874a2a5f682130263edc192
