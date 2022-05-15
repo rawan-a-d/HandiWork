@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // ----------------------
+// Health checks
+builder.Services.AddHealthChecks();
+
 if (builder.Environment.IsProduction())
 {
 	Console.WriteLine("--> Using SqlServer Db");
@@ -119,6 +122,8 @@ app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHealthChecks("/healthz");
 
 app.MapControllers();
 

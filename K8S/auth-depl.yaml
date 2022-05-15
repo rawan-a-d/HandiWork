@@ -19,8 +19,30 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rawanad/handiwork-auth:${{ github.sha }}
+          image: rawanad/handiwork-auth
           resources: {}
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+
           # Environment variables
           env:
             # custom name (can be anything)
