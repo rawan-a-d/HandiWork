@@ -6,7 +6,7 @@ metadata:
   annotations:
     keel.sh/policy: all
 spec:
-  replicas: 1
+  replicas: 2
   # select the template
   selector:
     matchLabels:
