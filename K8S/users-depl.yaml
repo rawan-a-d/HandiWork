@@ -19,6 +19,27 @@ spec:
         - name: users
           image: rawanad/handiwork-users:3458a6c27661b5ecb48c35b1152230a45b666f58
           resources: {}
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
 ---
 apiVersion: v1
 kind: Service

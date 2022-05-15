@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // ----------------
+// Health checks
+builder.Services.AddHealthChecks();
+
 // Database context
 if (builder.Environment.IsProduction())
 {
@@ -90,6 +93,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
+
+app.MapHealthChecks("/healthz");
 
 app.MapControllers();
 
