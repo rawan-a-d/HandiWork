@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rawanad/handiwork-auth:54285d208ff783ba207480860ba5ba5228f592a8
+          image: rawanad/handiwork-auth:b6d69b17fedf08a4691844d5ca3c1e8bab233050
           resources: {}
           envFrom:
             - secretRef:
