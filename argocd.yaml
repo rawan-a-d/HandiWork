@@ -42,3 +42,9 @@ spec:
       # if we renamed a resource or delete it, ArgoCD should do the same
       # by default, automatic sync will not delete resources
       prune: true
+      
+resource.customizations.health.bitnami.com_SealedSecret: |
+  hs = {}
+  hs.status = "Healthy"
+  hs.message = "Controller doesn't report resource status"
+  return hs
