@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # run only if k8sPolicyCheck job was a success
-    needs: k8sPolicyCheck
+    #needs: k8sPolicyCheck
 
     steps:
       - uses: actions/checkout@v3
