@@ -51,19 +51,16 @@ spec:
                   name: auth-db-connection-secret
                   # key name
                   key: auth-db-connection
-                  optional: true
             - name: JWT
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
                   key: jwt
-                  optional: true
             - name: RABBIT_MQ
               valueFrom:
                 secretKeyRef:
                   name: rabbitmq-secret
                   key: rabbitmq
-                  optional: true
 
 ---
 apiVersion: v1
