@@ -456,7 +456,6 @@ $RECYCLE.BIN/
 
 
 ## App settings
-appsettings.json
 appsettings.Development.json
 appsettings.Production.json
 /.vscode/settings.json

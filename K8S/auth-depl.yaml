@@ -17,11 +17,8 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rawanad/handiwork-auth:b6d69b17fedf08a4691844d5ca3c1e8bab233050
+          image: rawanad/handiwork-auth:d39eb646e21f8ec2c2698293c43cc12d0a3acc3d
           resources: {}
-          envFrom:
-            - secretRef:
-                name: auth-db-connection-secret
 
           readinessProbe:
             httpGet:
@@ -44,16 +41,16 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 10
 
+          # Environment variables
           env:
             # custom name (can be anything)
-            #- name: CONNECTION_STRING
-            #  valueFrom:
-            #    secretKeyRef:
-            #      # group name
-            #      #name: auth-db-connection-secret
-            #      name: auth-db-connection-secret2
-            #      # key name
-            #      key: auth-db-connection
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  # group name
+                  name: auth-db-connection-secret2
+                  # key name
+                  key: auth-db-connection
             - name: JWT
               valueFrom:
                 secretKeyRef:
