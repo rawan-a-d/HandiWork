@@ -48,7 +48,8 @@ spec:
               valueFrom:
                 secretKeyRef:
                   # group name
-                  name: auth-db-connection-secret
+                  #name: auth-db-connection-secret
+                  name: auth-db-connection-secret2
                   # key name
                   key: auth-db-connection
             - name: JWT
