@@ -13,6 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Health checks
 builder.Services.AddHealthChecks();
 
+// Identity configuration
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+	.AddEntityFrameworkStores<AppDbContext>();
+
+// Configuration
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
+// Automapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 if (builder.Environment.IsProduction())
 {
 	Console.WriteLine("--> Using SqlServer Db");
@@ -63,16 +73,6 @@ builder.Services.AddAuthentication(options =>
 		RequireExpirationTime = false,
 	};
 });
-
-// Identity configuration
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-	.AddEntityFrameworkStores<AppDbContext>();
-
-// Configuration
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-
-// Automapper
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // MassTransit
 builder.Services.AddMassTransit(config =>
