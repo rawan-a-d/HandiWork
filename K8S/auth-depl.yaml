@@ -54,7 +54,7 @@ spec:
             - name: JWT
               valueFrom:
                 secretKeyRef:
-                  name: jwt-secret2
+                  name: jwt-secret
                   key: jwt
             - name: RABBIT_MQ
               valueFrom:
