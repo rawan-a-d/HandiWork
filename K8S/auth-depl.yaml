@@ -18,6 +18,10 @@ spec:
       containers:
         - name: auth
           image: rawanad/handiwork-auth:d39eb646e21f8ec2c2698293c43cc12d0a3acc3d
+          # Environment variables
+          envFrom:
+            - secretRef:
+                name: auth-db-connection-secret
           resources: {}
 
           readinessProbe:
@@ -41,26 +45,25 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 10
 
-          # Environment variables
           env:
             # custom name (can be anything)
-            - name: CONNECTION_STRING
-              valueFrom:
-                secretKeyRef:
-                  # group name
-                  #name: auth-db-connection-secret
-                  name: auth-db-connection-secret2
-                  # key name
-                  key: auth-db-connection
+            #- name: CONNECTION_STRING
+            #  valueFrom:
+            #    secretKeyRef:
+            #      # group name
+            #      #name: auth-db-connection-secret
+            #      name: auth-db-connection-secret2
+            #      # key name
+            #      key: auth-db-connection
             - name: JWT
               valueFrom:
                 secretKeyRef:
-                  name: jwt-secret
+                  name: jwt-secret2
                   key: jwt
             - name: RABBIT_MQ
               valueFrom:
                 secretKeyRef:
-                  name: rabbitmq-secret
+                  name: rabbitmq-secret2
                   key: rabbitmq
 
 ---
