@@ -1,6 +1,7 @@
 using AutoMapper;
 using MassTransit;
 using MessagingModels;
+//using MessagingModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,6 @@ namespace Users.Controllers
 		private readonly IUserRepo _repository;
 		private readonly IMapper _mapper;
 		private readonly IPublishEndpoint _publishEndPoint;
-
 
 		public UsersController(
 			IUserRepo repository,
@@ -86,7 +86,7 @@ namespace Users.Controllers
 
 			try
 			{
-				// Publish UserUpdate event
+				// Publish UserUpdated event
 				await _publishEndPoint.Publish<UserUpdated>(new
 				{
 					Id = userModel.Id,
@@ -103,7 +103,7 @@ namespace Users.Controllers
 
 		[HttpDelete("{id}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Moderator, User")]
-		public ActionResult DeleteUser(int id)
+		public async Task<ActionResult> DeleteUser(int id)
 		{
 			// check if user is not owner and not admin or moderator
 			var userId = this.User.GetId();
@@ -125,6 +125,19 @@ namespace Users.Controllers
 			// save to db
 			if (_repository.SaveChanges())
 			{
+				try
+				{
+					// Publish UserDeleted event
+					await _publishEndPoint.Publish<UserDeleted>(new
+					{
+						Id = userId,
+					});
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
+				}
+
 				return Ok();
 			}
 
