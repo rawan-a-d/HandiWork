@@ -16,7 +16,20 @@ builder.Services.AddSwaggerGen();
 
 // -------------------
 // Database
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+if (builder.Environment.IsProduction())
+{
+	Console.WriteLine("--> Using SqlServer Db");
+	// Database context - SQL server
+	builder.Services.AddDbContext<AppDbContext>(opt =>
+		// specify database type and name
+		opt.UseSqlServer(builder.Configuration.GetConnectionString("ServicesDB"))
+	);
+}
+else
+{
+	Console.WriteLine("--> Using InMem Db");
+	builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+}
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -30,9 +43,6 @@ builder.Services.AddScoped<IPhotoRepo, PhotoRepo>();
 // Cloudinary
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IPhotoService, PhotoService>();
-
-// Event Processor
-//builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
