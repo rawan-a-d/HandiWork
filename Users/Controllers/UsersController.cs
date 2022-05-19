@@ -1,9 +1,13 @@
 using AutoMapper;
 using MassTransit;
 using MessagingModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.Data;
 using Users.Dtos;
+using Users.Extensions;
 using Users.Models;
 
 namespace Users.Controllers
@@ -15,6 +19,7 @@ namespace Users.Controllers
 		private readonly IUserRepo _repository;
 		private readonly IMapper _mapper;
 		private readonly IPublishEndpoint _publishEndPoint;
+
 
 		public UsersController(
 			IUserRepo repository,
@@ -28,6 +33,7 @@ namespace Users.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public ActionResult<IEnumerable<UserReadDto>> GetUsers()
 		{
 			var users = _repository.GetUsers();
@@ -36,9 +42,12 @@ namespace Users.Controllers
 		}
 
 		[HttpGet("{id}", Name = "GetUser")]
-		public ActionResult<UserReadDto> GetUser(int id)
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		public async Task<ActionResult<UserReadDto>> GetUserAsync(int id)
 		{
 			var userItem = _repository.GetUser(id);
+
+			var token = await HttpContext.GetTokenAsync("access_token");
 
 			if (userItem != null)
 			{
@@ -50,11 +59,20 @@ namespace Users.Controllers
 		}
 
 		[HttpPut("{id}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<ActionResult> UpdateUser(int id, UserUpdateDto userUpdateDto)
 		{
 			if (!_repository.UserExists(id))
 			{
 				return BadRequest();
+			}
+
+			// check if user is not owner and not admin or moderator
+			var userId = this.User.GetId();
+
+			if (userId != id.ToString() && (!this.User.GetRoles().Contains("Admin") || !this.User.GetRoles().Contains("Moderator")))
+			{
+				return Unauthorized();
 			}
 
 			// map UserUpdateDto to User
@@ -84,9 +102,23 @@ namespace Users.Controllers
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Moderator, User")]
 		public ActionResult DeleteUser(int id)
 		{
+			// check if user is not owner and not admin or moderator
+			var userId = this.User.GetId();
+
+			if (userId != id.ToString() && (!this.User.GetRoles().Contains("Admin") || !this.User.GetRoles().Contains("Moderator")))
+			{
+				return Unauthorized();
+			}
+
 			var user = _repository.GetUser(id);
+
+			if (user == null)
+			{
+				return NotFound("User was not found");
+			}
 
 			_repository.DeleteUser(user);
 
