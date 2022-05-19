@@ -128,7 +128,7 @@ namespace Auth.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Route("Roles")]
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 		public async Task<IActionResult> CreateRole([FromBody] RoleCreateDto roleCreateDto)
 		{
 			// check if role already exists
@@ -161,7 +161,7 @@ namespace Auth.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Route("AddUserToRole")]
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 		public async Task<IActionResult> AddUserToRole([FromBody] RoleUserDto roleUserDto)
 		{
 			// check if user exists
@@ -211,7 +211,7 @@ namespace Auth.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Route("RemoveUserFromRole")]
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 		public async Task<IActionResult> RemoveUserFromRole([FromBody] RoleUserDto roleUserDto)
 		{
 			// check if user exists

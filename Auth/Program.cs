@@ -3,31 +3,46 @@ using Auth.Data;
 using Auth.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
+//3. Handle env variables in production (Program)
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // ----------------------
+string jwtConfig;
+string rabbitMQ;
+string connectionString;
+
 if (builder.Environment.IsProduction())
 {
+	// DB
 	Console.WriteLine("--> Using SqlServer Db");
 	// Database context - SQL server
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
 		opt.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"))
 	);
+
+	jwtConfig = Environment.GetEnvironmentVariable("JWT");
+	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
+	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 }
 else
 {
+	// DB
 	Console.WriteLine("--> Using InMem Db");
 	// Database context - In memory
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
 		opt.UseInMemoryDatabase("InMem")
 	);
+
+	jwtConfig = builder.Configuration["JwtConfig:Secret"];
+	rabbitMQ = $"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}";
+	connectionString = builder.Configuration.GetConnectionString("IdentityDB");
 }
 
 // Authentication
@@ -42,7 +57,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(jwt =>
 {
 	// how it should be encoded
-	var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Secret"]);
+	var key = Encoding.ASCII.GetBytes(jwtConfig);
 
 	// jwt token settings
 	jwt.SaveToken = true;
@@ -82,8 +97,8 @@ builder.Services.AddMassTransit(config =>
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
 		//cfg.Host("amqp://guest:guest@localhost:5672");
-		Console.WriteLine($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
-		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+		Console.WriteLine(rabbitMQ);
+		cfg.Host(rabbitMQ);
 	});
 });
 
