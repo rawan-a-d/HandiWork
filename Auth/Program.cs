@@ -1,5 +1,6 @@
 using System.Text;
 using Auth.Data;
+using Auth.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -60,8 +61,14 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Identity configuration
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-	.AddEntityFrameworkStores<AppDbContext>();
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+//	.AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentity<User, Role>(options =>
+{
+	options.SignIn.RequireConfirmedAccount = true;
+	options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<AppDbContext>();
 
 // Configuration
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);

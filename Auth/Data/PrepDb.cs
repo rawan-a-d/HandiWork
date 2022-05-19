@@ -1,4 +1,4 @@
-using Auth.Dtos;
+using Auth.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,48 +6,44 @@ namespace Auth.Data
 {
 	public static class PrepDb
 	{
-		public static void PrepPopulation(IApplicationBuilder app, bool isDevelopment)
+		public async static void PrepPopulation(IApplicationBuilder app, bool isDevelopment)
 		{
-
 			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{
-				SeedData(
-					serviceScope.ServiceProvider.GetService<UserManager<IdentityUser>>(),
-					serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>(),
-					serviceScope.ServiceProvider.GetService<AppDbContext>(),
-					isDevelopment
+				await SeedData(
+					serviceScope.ServiceProvider.GetService<UserManager<User>>(),
+					serviceScope.ServiceProvider.GetService<RoleManager<Role>>()
 				);
 			}
 		}
-
-		private async static void SeedData(
-			UserManager<IdentityUser> userManager,
-			RoleManager<IdentityRole> roleManager,
-			AppDbContext context,
-			bool isDevelopment)
+		private static async Task SeedData(UserManager<User> userManager, RoleManager<Role> roleManager)
 		{
-			if (isDevelopment)
+			// check if users table contains any users
+			if (await userManager.Users.AnyAsync())
 			{
-				// if no data
-				if (!context.Users.Any())
-				{
-					Console.WriteLine("--> Seeding data...");
-
-					await roleManager.CreateAsync(new IdentityRole("Moderator"));
-					await roleManager.CreateAsync(new IdentityRole("AppUser"));
-
-					var user1 = new UserCreateDto { Name = "Rawan", Email = "rawan@gmail.com", Password = "Pa$$w0rd" };
-					var user1Identity = new IdentityUser { Email = user1.Email, UserName = user1.Email };
-
-					await userManager.CreateAsync(user1Identity, "Pa$$w0rd");
-
-					await userManager.AddToRoleAsync(user1Identity, "Moderator");
-				}
-				else
-				{
-					Console.WriteLine("--> We already have data");
-				}
+				return;
 			}
+
+			// roles
+			var roles = new List<Role> {
+				new Role("User"),
+				new Role("Admin"),
+				new Role("Moderator")
+			};
+			// create roles
+			foreach (var role in roles)
+			{
+				await roleManager.CreateAsync(role);
+			}
+
+			// Create an admin
+			var admin = new User
+			{
+				Email = "admin@admin.com",
+				UserName = "admin"
+			};
+			await userManager.CreateAsync(admin, "Pa$$w0rd");
+			await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
 		}
 	}
 }
