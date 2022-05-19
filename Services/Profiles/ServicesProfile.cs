@@ -17,11 +17,6 @@ namespace Services.Profiles
 			CreateMap<ServiceCategoryCreateDto, ServiceCategory>();
 			CreateMap<ServiceCategoryUpdateDto, ServiceCategory>();
 
-			CreateMap<UserPublishedDto, User>()
-				.ForMember(dest => dest.ExternalId, opt =>
-					opt.MapFrom(src => src.Id)
-				);
-
 			CreateMap<Photo, PhotoDto>();
 		}
 	}
