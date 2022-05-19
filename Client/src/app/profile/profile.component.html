@@ -33,10 +33,11 @@
 			<button mat-raised-button color="primary"
 				[routerLink]="['/user', authService.currentUser.Id, 'manage-skills']">Manage work</button>
 		</div>
-		<div class="container__row container__skills">
-			<mat-chip-list aria-label="Fish selection">
-				<mat-chip color="accent" selected>Painting</mat-chip>
-				<mat-chip>Installing laminate</mat-chip>
+		<div class="container__row container__skills" *ngFor="let service in services">
+			<mat-chip-list aria-label="Skill selection">
+				<!--<mat-chip color="accent" selected>Painting</mat-chip>-->
+				<!--<mat-chip>Installing laminate</mat-chip>-->
+				<mat-chip>{{service.serviceCategory.name}}</mat-chip>
 			</mat-chip-list>
 		</div>
 		<div class="container__row container__skills">

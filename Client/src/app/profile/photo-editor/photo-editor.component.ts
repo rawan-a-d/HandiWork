@@ -38,7 +38,7 @@ export class PhotoEditorComponent implements OnInit {
 
 		// get service id from url
 		this.route.paramMap.subscribe(params => {
-			var serviceId = + params.get("skillId")
+			var serviceId = + params.get("skillId");
 
 			// get service
 			this.getService(this.currentUser.id, serviceId);

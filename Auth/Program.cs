@@ -18,20 +18,24 @@ string connectionString;
 
 if (builder.Environment.IsProduction())
 {
+	jwtConfig = Environment.GetEnvironmentVariable("JWT");
+	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
+	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
 	// DB
 	Console.WriteLine("--> Using SqlServer Db");
 	// Database context - SQL server
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		opt.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"))
+		opt.UseSqlServer(connectionString)
 	);
-
-	jwtConfig = Environment.GetEnvironmentVariable("JWT");
-	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
-	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 }
 else
 {
+	jwtConfig = builder.Configuration["JwtConfig:Secret"];
+	rabbitMQ = $"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}";
+	connectionString = builder.Configuration.GetConnectionString("IdentityDB");
+
 	// DB
 	Console.WriteLine("--> Using InMem Db");
 	// Database context - In memory
@@ -39,10 +43,6 @@ else
 		// specify database type and name
 		opt.UseInMemoryDatabase("InMem")
 	);
-
-	jwtConfig = builder.Configuration["JwtConfig:Secret"];
-	rabbitMQ = $"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}";
-	connectionString = builder.Configuration.GetConnectionString("IdentityDB");
 }
 
 // Authentication
