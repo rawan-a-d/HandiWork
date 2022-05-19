@@ -9,11 +9,14 @@ import { UserAuth } from '../_models/UserAuth';
 	providedIn: 'root'
 })
 export class AuthService {
+	url: string;
 
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) {
+		this.url = environment.apiUrlAuth;
+	}
 
 	register(userAuth: UserAuth) {
-		return this.http.post(environment.apiUrlAuth + '/register', JSON.stringify(userAuth), { responseType: 'text' })
+		return this.http.post(this.url + '/register', JSON.stringify(userAuth), { responseType: 'text' })
 			.pipe(
 				map(response => {
 					if (response) {
@@ -28,7 +31,7 @@ export class AuthService {
 	}
 
 	login(credentials: any) {
-		return this.http.post(environment.apiUrlAuth + '/login', JSON.stringify(credentials), { responseType: 'text' })
+		return this.http.post(this.url + '/login', JSON.stringify(credentials), { responseType: 'text' })
 			.pipe(
 				map(response => {
 					if (response) {
@@ -66,6 +69,12 @@ export class AuthService {
 		let decodedToken = jwtHelper.decodeToken(token);
 
 		return decodedToken;
+	}
+
+	get token() {
+		let token = localStorage.getItem('token');
+
+		return token;
 	}
 
 	get userId() {

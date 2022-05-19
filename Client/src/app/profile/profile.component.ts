@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Profile } from '../_models/Profile';
+import { AuthService } from '../_services/auth.service';
 import { ServicesService } from '../_services/services.service';
 import { UsersService } from '../_services/users.service';
 
@@ -12,7 +13,8 @@ export class ProfileComponent implements OnInit {
 	profile!: Profile;
 
 	constructor(private servicesService: ServicesService,
-		private usersService: UsersService) { }
+		private usersService: UsersService,
+		public authService: AuthService) { }
 
 	ngOnInit(): void {
 		// get id from url

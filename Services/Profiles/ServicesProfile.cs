@@ -22,6 +22,7 @@ namespace Services.Profiles
 					opt.MapFrom(src => src.Id)
 				);
 
+			CreateMap<Photo, PhotoDto>();
 		}
 	}
 }

@@ -10,5 +10,8 @@ namespace Services.Models
 
 		[Required]
 		public string Name { get; set; }
+
+		// navigation properties
+		public ICollection<Service> Services { get; set; }
 	}
 }
