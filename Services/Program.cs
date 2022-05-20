@@ -15,20 +15,42 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // -------------------
-// Database
+string jwtConfig;
+string rabbitMQ;
+string connectionString;
+CloudinarySettings cloudinarySettings;
+
 if (builder.Environment.IsProduction())
 {
-	Console.WriteLine("--> Using SqlServer Db");
+	jwtConfig = Environment.GetEnvironmentVariable("JWT");
+	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
+	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING_SERVICES");
+	cloudinarySettings = new CloudinarySettings
+	{
+		CloudName = Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME"),
+		ApiKey = Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY"),
+		ApiSecret = Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET")
+	};
+
 	// Database context - SQL server
+	Console.WriteLine("--> Using SqlServer Db");
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		opt.UseSqlServer(builder.Configuration.GetConnectionString("ServicesDB"))
+		opt.UseSqlServer(connectionString)
 	);
 }
 else
 {
+	jwtConfig = builder.Configuration["JwtConfig:Secret"];
+	rabbitMQ = $"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}";
+	connectionString = builder.Configuration.GetConnectionString("ServicesDB");
+	cloudinarySettings = builder.Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
+
+	// Database context - In memorys
 	Console.WriteLine("--> Using InMem Db");
-	builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+	builder.Services.AddDbContext<AppDbContext>(opt =>
+		opt.UseInMemoryDatabase("InMem")
+	);
 }
 
 // Automapper
@@ -41,7 +63,8 @@ builder.Services.AddScoped<IServiceCategoryRepo, ServiceCategoryRepo>();
 builder.Services.AddScoped<IPhotoRepo, PhotoRepo>();
 
 // Cloudinary
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddSingleton<CloudinarySettings>(cloudinarySettings);
+//builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 // Automapper
@@ -57,7 +80,7 @@ builder.Services.AddMassTransit(config =>
 
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
-		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+		cfg.Host(rabbitMQ);
 
 		// These are the consumers
 		// creates exchange and queue with this name
