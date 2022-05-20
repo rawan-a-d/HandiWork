@@ -1,5 +1,8 @@
+using System.Text;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Services.Consumers;
 using Services.Data;
 using Services.Helpers;
@@ -52,6 +55,36 @@ else
 		opt.UseInMemoryDatabase("InMem")
 	);
 }
+
+// Authentication
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	// in case first one fails
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+// JWT token configuration
+.AddJwtBearer(jwt =>
+{
+	// how it should be encoded
+	var key = Encoding.ASCII.GetBytes(jwtConfig);
+
+	// jwt token settings
+	jwt.SaveToken = true;
+	jwt.TokenValidationParameters = new TokenValidationParameters
+	{
+		// validate third part of the token using the secret and check if it was configured and encrypted by us
+		ValidateIssuerSigningKey = true,
+		// define signing key (responsible for encrypting)
+		IssuerSigningKey = new SymmetricSecurityKey(key),
+		ValidateIssuer = false,
+		ValidateAudience = false,
+		ValidateLifetime = true,
+		// should be true in production
+		RequireExpirationTime = false,
+	};
+});
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -131,6 +164,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -1,7 +1,10 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Data;
 using Services.Dtos;
+using Services.Extensions;
 using Services.Models;
 
 namespace Services.Controllers
@@ -37,16 +40,23 @@ namespace Services.Controllers
 		/// <param name="serviceCreateDto"></param>
 		/// <returns></returns>
 		[HttpPost]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public ActionResult CreateService(int userId, ServiceCreateDto serviceCreateDto)
 		{
-			// TODO: validate user is logged in
-
 			// check if category exists
 			var serviceCategory = _serviceCategoryRepository.GetServiceCategory(serviceCreateDto.ServiceCategoryId);
 
 			if (serviceCategory == null)
 			{
 				return BadRequest("Service category does not exist");
+			}
+
+			// check if userId is the same as the current user id
+			var userIdInToken = this.User.GetId();
+
+			if (userIdInToken != userId.ToString())
+			{
+				return Unauthorized();
 			}
 
 			var serviceModel = _mapper.Map<Service>(serviceCreateDto);
@@ -68,10 +78,9 @@ namespace Services.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpGet]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public ActionResult<IEnumerable<ServiceReadDto>> GetServices(int userId)
 		{
-			// TODO: validate user is logged in
-
 			var services = _mapper.Map<IEnumerable<ServiceReadDto>>(_serviceRepository.GetServicesForUser(userId));
 
 			return Ok(services);
@@ -84,10 +93,9 @@ namespace Services.Controllers
 		/// <param name="serviceId"></param>
 		/// <returns></returns>
 		[HttpGet("{serviceId}", Name = "GetService")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public ActionResult<IEnumerable<ServiceReadDto>> GetService(int userId, int serviceId)
 		{
-			// TODO: validate user is logged in
-
 			// get service
 			var service = _serviceRepository.GetService(serviceId, userId);
 
@@ -107,15 +115,27 @@ namespace Services.Controllers
 		/// <param name="serviceUpdateDto"></param>
 		/// <returns></returns>
 		[HttpPut("{serviceId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public ActionResult<ServiceReadDto> UpdateService(int userId, int serviceId, ServiceUpdateDto serviceUpdateDto)
 		{
-			// TODO: validate user is logged in (JWT)
-			// TODO: validate user is owner (if not unauthorized)
+			// check if userId is the same as the current user id
+			var userIdInToken = this.User.GetId();
+
+			if (userIdInToken != userId.ToString())
+			{
+				return Unauthorized();
+			}
 
 			var service = _serviceRepository.GetService(serviceId, userId);
 			if (service == null)
 			{
 				return NotFound();
+			}
+
+			// validate user is owner
+			if (service.UserId != userId)
+			{
+				return Unauthorized();
 			}
 
 			// map ServiceUpdateDto to Service
@@ -136,13 +156,25 @@ namespace Services.Controllers
 		/// <param name="serviceId"></param>
 		/// <returns></returns>
 		[HttpDelete("{serviceId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public ActionResult DeleteService(int userId, int serviceId)
 		{
-			// TODO: validate user is logged in (JWT)
-			// TODO: validate user is owner (if not unauthorized)
+			// check if userId is the same as the current user id
+			var userIdInToken = this.User.GetId();
+
+			if (userIdInToken != userId.ToString())
+			{
+				return Unauthorized();
+			}
 
 			// get service
 			var service = _serviceRepository.GetService(serviceId, userId);
+
+			// validate user is owner
+			if (service.UserId != userId)
+			{
+				return Unauthorized();
+			}
 
 			_serviceRepository.DeleteService(service);
 
@@ -155,14 +187,29 @@ namespace Services.Controllers
 		}
 
 		[HttpPost("{serviceId}/photos")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<ActionResult<PhotoDto>> AddPhoto(int userId, int serviceId, IFormFile file)
 		{
+			// check if userId is the same as the current user id
+			var userIdInToken = this.User.GetId();
+
+			if (userIdInToken != userId.ToString())
+			{
+				return Unauthorized();
+			}
+
 			// get service object with the photos
 			var service = _serviceRepository.GetService(serviceId, userId);
 
 			if (service == null)
 			{
 				return NotFound("Service does not exist");
+			}
+
+			// validate user is owner
+			if (service.UserId != userId)
+			{
+				return Unauthorized();
 			}
 
 			// add new photo to Cloudinary
@@ -200,14 +247,29 @@ namespace Services.Controllers
 		/// <param name="photoId">photo id</param>
 		/// <returns></returns>
 		[HttpDelete("{serviceId}/photos/{photoId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<ActionResult> DeletePhoto(int userId, int serviceId, int photoId)
 		{
+			// check if userId is the same as the current user id
+			var userIdInToken = this.User.GetId();
+
+			if (userIdInToken != userId.ToString())
+			{
+				return Unauthorized();
+			}
+
 			// get service object with the photos
 			var service = _serviceRepository.GetService(serviceId, userId);
 
 			if (service == null)
 			{
 				return NotFound("Service does not exist");
+			}
+
+			// validate user is owner
+			if (service.UserId != userId)
+			{
+				return Unauthorized();
 			}
 
 			// find photo

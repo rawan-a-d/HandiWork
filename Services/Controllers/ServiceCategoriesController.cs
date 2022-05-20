@@ -1,4 +1,6 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Data;
 using Services.Dtos;
@@ -25,10 +27,9 @@ namespace Services.Controllers
 		/// <param name="serviceCategoryCreateDto"></param>
 		/// <returns></returns>
 		[HttpPost]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Moderator")]
 		public ActionResult<ServiceCategoryReadDto> CreateServiceCategory(ServiceCategoryCreateDto serviceCategoryCreateDto)
 		{
-			// TODO: check if admin, if not unauthorized
-
 			if (_repository.DoesServiceCategoryExist(serviceCategoryCreateDto.Name))
 			{
 				return Conflict("Service category already exists");
@@ -84,10 +85,9 @@ namespace Services.Controllers
 		/// <param name="serviceCategoryUpdateDto"></param>
 		/// <returns></returns>
 		[HttpPut("{id}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Moderator")]
 		public ActionResult UpdateServiceCategory(int id, ServiceCategoryUpdateDto serviceCategoryUpdateDto)
 		{
-			// TODO: check if admin, if not unauthorized
-
 			var serviceCategoryModel = _repository.GetServiceCategory(id);
 
 			if (serviceCategoryModel == null)
@@ -103,7 +103,7 @@ namespace Services.Controllers
 			// save to db
 			_repository.SaveChanges();
 
-			return NoContent();			
+			return NoContent();
 		}
 
 		/// <summary>
@@ -112,10 +112,9 @@ namespace Services.Controllers
 		/// <param name="id"></param>
 		/// <returns></returns>
 		[HttpDelete("{id}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Moderator")]
 		public ActionResult DeleteServiceCategory(int id)
 		{
-			// TODO: check if admin, if not unauthorized
-
 			var serviceCategoryModel = _repository.GetServiceCategory(id);
 
 			if (serviceCategoryModel == null)
