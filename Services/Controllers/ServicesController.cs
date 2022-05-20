@@ -1,4 +1,6 @@
 using AutoMapper;
+using MassTransit;
+using MessagingModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,19 +20,22 @@ namespace Services.Controllers
 		private readonly IPhotoRepo _photoRepository;
 		private readonly IPhotoService _photoService;
 		private readonly IMapper _mapper;
+		private readonly IPublishEndpoint _publishEndPoint;
 
 		public ServicesController(
 			IServiceRepo serviceRepository,
 			IServiceCategoryRepo serviceCategoryRepository,
 			IPhotoRepo photoRepository,
 			IPhotoService photoService,
-			IMapper mapper)
+			IMapper mapper,
+			IPublishEndpoint publishEndPoint)
 		{
 			_serviceRepository = serviceRepository;
 			_serviceCategoryRepository = serviceCategoryRepository;
 			_photoRepository = photoRepository;
 			_photoService = photoService;
 			_mapper = mapper;
+			_publishEndPoint = publishEndPoint;
 		}
 
 		/// <summary>
@@ -41,7 +46,7 @@ namespace Services.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		public ActionResult CreateService(int userId, ServiceCreateDto serviceCreateDto)
+		public async Task<ActionResult> CreateService(int userId, ServiceCreateDto serviceCreateDto)
 		{
 			// check if category exists
 			var serviceCategory = _serviceCategoryRepository.GetServiceCategory(serviceCreateDto.ServiceCategoryId);
@@ -64,11 +69,24 @@ namespace Services.Controllers
 			_serviceRepository.CreateService(userId, serviceModel);
 			_serviceRepository.SaveChanges();
 
+			// Publish ServiceCreated event
+			await _publishEndPoint.Publish<ServiceCreated>(new
+			{
+				Id = serviceModel.Id,
+				Info = serviceModel.Info,
+				UserId = serviceModel.UserId,
+				ServiceCategoryId = serviceModel.ServiceCategoryId
+			});
+
 			var serviceReadDto = _mapper.Map<ServiceReadDto>(serviceModel);
 
 			return CreatedAtRoute(
 				nameof(GetService),
-				new { userId = userId, serviceId = serviceReadDto.Id },
+				new
+				{
+					userId = userId,
+					serviceId = serviceReadDto.Id
+				},
 				serviceReadDto
 			);
 		}
@@ -116,7 +134,7 @@ namespace Services.Controllers
 		/// <returns></returns>
 		[HttpPut("{serviceId}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		public ActionResult<ServiceReadDto> UpdateService(int userId, int serviceId, ServiceUpdateDto serviceUpdateDto)
+		public async Task<ActionResult<ServiceReadDto>> UpdateService(int userId, int serviceId, ServiceUpdateDto serviceUpdateDto)
 		{
 			// check if userId is the same as the current user id
 			var userIdInToken = this.User.GetId();
@@ -146,6 +164,13 @@ namespace Services.Controllers
 			// save to db
 			_serviceRepository.SaveChanges();
 
+			// Publish ServiceUpdated event
+			await _publishEndPoint.Publish<ServiceUpdated>(new
+			{
+				Id = service.Id,
+				Info = service.Info
+			});
+
 			return NoContent();
 		}
 
@@ -157,7 +182,7 @@ namespace Services.Controllers
 		/// <returns></returns>
 		[HttpDelete("{serviceId}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		public ActionResult DeleteService(int userId, int serviceId)
+		public async Task<ActionResult> DeleteService(int userId, int serviceId)
 		{
 			// check if userId is the same as the current user id
 			var userIdInToken = this.User.GetId();
@@ -180,6 +205,12 @@ namespace Services.Controllers
 
 			if (_serviceRepository.SaveChanges())
 			{
+				// Publish ServiceDeleted event
+				await _publishEndPoint.Publish<ServiceDeleted>(new
+				{
+					Id = service.Id
+				});
+
 				return Ok();
 			}
 
