@@ -53,6 +53,7 @@ builder.Services.AddMassTransit(config =>
 	// register consumers
 	config.AddConsumer<UserUpdatedConsumer>();
 	config.AddConsumer<UserCreatedConsumer>();
+	config.AddConsumer<UserDeletedConsumer>();
 
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
@@ -69,6 +70,11 @@ builder.Services.AddMassTransit(config =>
 		{
 			// define the consumer class
 			c.ConfigureConsumer<UserCreatedConsumer>(ctx);
+		});
+		cfg.ReceiveEndpoint("Services_user-delete-endpoint", c =>
+		{
+			// define the consumer class
+			c.ConfigureConsumer<UserDeletedConsumer>(ctx);
 		});
 	});
 });

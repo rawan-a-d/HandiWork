@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Services.Models;
 
 namespace Services.Data
@@ -10,25 +11,39 @@ namespace Services.Data
 			_context = context;
 		}
 
-		public bool SaveChanges()
+		public void CreateUser(User user)
 		{
-			return (_context.SaveChanges() > 0);
-		}
-
-		public bool ExternalUserExists(int externalPlatformId)
-		{
-			return _context.Users.Any(p => p.ExternalId == externalPlatformId);
-		}
-
-
-		public void UpdateUser(User user)
-		{
-			_context.Users.Update(user);
+			_context.Users.Add(user);
 		}
 
 		public User GetUser(int id)
 		{
 			return _context.Users.Find(id);
+		}
+
+		public User GetUserByExternalId(int externalId)
+		{
+			return _context.Users.FirstOrDefault(u => u.ExternalId == externalId);
+		}
+
+		public void UpdateUser(User user)
+		{
+			_context.Entry(user).State = EntityState.Modified;
+		}
+
+		public void DeleteUser(User user)
+		{
+			_context.Users.Remove(user);
+		}
+
+		public bool ExternalUserExists(int externalId)
+		{
+			return _context.Users.Any(p => p.ExternalId == externalId);
+		}
+
+		public bool SaveChanges()
+		{
+			return (_context.SaveChanges() > 0);
 		}
 	}
 }
