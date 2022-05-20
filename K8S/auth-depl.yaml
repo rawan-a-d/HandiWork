@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rawanad/handiwork-auth:f24cc22ea8e859111823be63b8f0379dcf46324a
+          image: rawanad/handiwork-auth:2cfbfb7f6591d9987b6eb4a7b3287a4640230a7a
           resources: {}
 
           readinessProbe:
