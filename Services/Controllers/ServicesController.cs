@@ -228,7 +228,7 @@ namespace Services.Controllers
 			{
 				return Unauthorized();
 			}
-
+      
 			// get service object with the photos
 			var service = _serviceRepository.GetService(serviceId, userId);
 
