@@ -5,18 +5,20 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     tags:
+      # triggered when a tag is pushed
+      # 1. git tag v*.*.* (e.g. v1.0.1)
+      # 2. git push v*.*.*
       - "v*"
-  #branches: [master]
 
-  #paths:
-  #  - "MessagingModels"
+    # When a change is detected in project
+    paths:
+      - "MessagingModels"
 
 env:
   PROJECT_PATH: "MessagingModels/MessagingModels.csproj"
   PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}/output
   NUGET_SOURCE_URL: "https://api.nuget.org/v3/index.json"
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "deploy"
   deploy:
@@ -27,7 +29,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v3
 
