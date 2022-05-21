@@ -14,7 +14,6 @@ string jwtConfig;
 string rabbitMQ;
 string connectionString;
 
-// Database context
 if (builder.Environment.IsProduction())
 {
 	jwtConfig = Environment.GetEnvironmentVariable("JWT");

@@ -1,0 +1,55 @@
+# Deploy MessagingModels to Nuget
+name: Deploy to Nuget
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    tags:
+      # triggered when a tag is pushed
+      # 1. git tag v*.*.* (e.g. v1.0.1)
+      # 2. git push v*.*.*
+      - "v*"
+
+env:
+  PROJECT_PATH: "MessagingModels/MessagingModels.csproj"
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}/output
+  NUGET_SOURCE_URL: "https://api.nuget.org/v3/index.json"
+
+jobs:
+  # This workflow contains a single job called "deploy"
+  deploy:
+    name: Deploy
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Restore packages
+        run: |
+          dotnet restore ${{ env.PROJECT_PATH }}
+
+      - name: Build project
+        run: |
+          dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+
+      - name: Get Version
+        id: version
+        uses: battila7/get-version-action@v2
+
+      - name: Pack project
+        run: |
+          #dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+          dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+
+      - name: Push package
+        run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
