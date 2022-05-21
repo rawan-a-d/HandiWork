@@ -56,21 +56,21 @@ jobs:
 
       - name: Docker build and push
         run: |
-          #docker build -t ${{ env.DH_USERNAME }}/handiwork-users:latest -t ${{ env.DH_USERNAME }}/handiwork-users:${{ env.GITHUB_SHA }} -f Users/Dockerfile ./Users
-          #docker push ${{ env.DH_USERNAME }}/handiwork-users:${{ env.GITHUB_SHA }}
-          #docker push ${{ env.DH_USERNAME }}/handiwork-users:latest
+          docker build -t ${{ env.DH_USERNAME }}/handiwork-users:latest -t ${{ env.DH_USERNAME }}/handiwork-users:${{ env.GITHUB_SHA }} -f Users/Dockerfile ./Users
+          docker push ${{ env.DH_USERNAME }}/handiwork-users:${{ env.GITHUB_SHA }}
+          docker push ${{ env.DH_USERNAME }}/handiwork-users:latest
 
-          #docker build -t ${{ env.DH_USERNAME }}/handiwork-services:latest -t ${{ env.DH_USERNAME }}/handiwork-services:${{ env.GITHUB_SHA }} -f Services/Dockerfile ./Services
-          #docker push ${{ env.DH_USERNAME }}/handiwork-services:${{ env.GITHUB_SHA }}
-          #docker push ${{ env.DH_USERNAME }}/handiwork-services:latest
+          docker build -t ${{ env.DH_USERNAME }}/handiwork-services:latest -t ${{ env.DH_USERNAME }}/handiwork-services:${{ env.GITHUB_SHA }} -f Services/Dockerfile ./Services
+          docker push ${{ env.DH_USERNAME }}/handiwork-services:${{ env.GITHUB_SHA }}
+          docker push ${{ env.DH_USERNAME }}/handiwork-services:latest
 
           docker build -t ${{ env.DH_USERNAME }}/handiwork-auth:latest -t ${{ env.DH_USERNAME }}/handiwork-auth:${{ env.GITHUB_SHA }} -f Auth/Dockerfile ./Auth
           docker push ${{ env.DH_USERNAME }}/handiwork-auth:${{ env.GITHUB_SHA }}
           docker push ${{ env.DH_USERNAME }}/handiwork-auth:latest
 
-          #docker build -t ${{ env.DH_USERNAME }}/handiwork-client:latest -t ${{ env.DH_USERNAME }}/handiwork-client:${{ env.GITHUB_SHA }} -f Client/Dockerfile ./Client
-          #docker push ${{ env.DH_USERNAME }}/handiwork-client:${{ env.GITHUB_SHA }}
-          #docker push ${{ env.DH_USERNAME }}/handiwork-client:latest
+          docker build -t ${{ env.DH_USERNAME }}/handiwork-client:latest -t ${{ env.DH_USERNAME }}/handiwork-client:${{ env.GITHUB_SHA }} -f Client/Dockerfile ./Client
+          docker push ${{ env.DH_USERNAME }}/handiwork-client:${{ env.GITHUB_SHA }}
+          docker push ${{ env.DH_USERNAME }}/handiwork-client:latest
 
       - name: Update Auth yaml file in place
         # You may pin to the exact commit or the version.
