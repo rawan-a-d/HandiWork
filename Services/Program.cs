@@ -15,6 +15,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // -------------------
+// Health checks
+builder.Services.AddHealthChecks();
+
 // Database
 if (builder.Environment.IsProduction())
 {
@@ -103,6 +106,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
+
+app.MapHealthChecks("/healthz");
 
 app.MapControllers();
 

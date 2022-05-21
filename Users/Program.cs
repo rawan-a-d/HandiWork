@@ -11,6 +11,7 @@ string jwtConfig;
 string rabbitMQ;
 string connectionString;
 
+// Database context
 if (builder.Environment.IsProduction())
 {
 	jwtConfig = Environment.GetEnvironmentVariable("JWT");
@@ -81,6 +82,9 @@ builder.Services.AddCors(options =>
 			.AllowAnyHeader();
 		});
 });
+
+// Health checks
+builder.Services.AddHealthChecks();
 // ----------------
 
 builder.Services.AddControllers();
@@ -101,6 +105,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
+
+app.MapHealthChecks("/healthz");
 
 app.MapControllers();
 

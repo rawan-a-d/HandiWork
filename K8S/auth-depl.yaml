@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: auth-depl
 spec:
-  replicas: 1
+  replicas: 2
   # select the template
   selector:
     matchLabels:
@@ -17,8 +17,50 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rawanad/handiwork-auth
+          image: rawanad/handiwork-auth:2cfbfb7f6591d9987b6eb4a7b3287a4640230a7a
           resources: {}
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+
+          # Environment variables
+          env:
+            # custom name (can be anything)
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  # group name
+                  name: auth-db-connection-secret2
+                  # key name
+                  key: auth-db-connection
+            - name: JWT
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret2
+                  key: jwt
+            - name: RABBIT_MQ
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret2
+                  key: rabbitmq
 
 ---
 apiVersion: v1

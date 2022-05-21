@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: rabbitmq-depl
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: rabbitmq
@@ -23,6 +23,28 @@ spec:
             - containerPort: 5672
               name: rbmq-msg-port
           resources: {}
+
+          livenessProbe:
+            exec:
+              # This is just an example. There is no "one true health check" but rather
+              # several rabbitmq-diagnostics commands that can be combined to form increasingly comprehensive
+              # and intrusive health checks.
+              # Learn more at https://www.rabbitmq.com/monitoring.html#health-checks.
+              #
+              # Stage 3 check:
+              command: ["rabbitmq-diagnostics", "-q", "alarms"]
+            initialDelaySeconds: 60
+            # See https://www.rabbitmq.com/monitoring.html for monitoring frequency recommendations.
+            periodSeconds: 60
+            timeoutSeconds: 15
+
+          readinessProbe:
+            exec:
+              # Stage 3 check:
+              command: ["rabbitmq-diagnostics", "-q", "alarms"]
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 10
 
 ---
 apiVersion: v1
