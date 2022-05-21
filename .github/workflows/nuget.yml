@@ -1,3 +1,4 @@
+# Deploy MessagingModels to Nuget
 name: Deploy to Nuget
 
 # Controls when the workflow will run
@@ -9,10 +10,6 @@ on:
       # 1. git tag v*.*.* (e.g. v1.0.1)
       # 2. git push v*.*.*
       - "v*"
-
-    # When a change is detected in project
-    paths:
-      - "MessagingModels"
 
 env:
   PROJECT_PATH: "MessagingModels/MessagingModels.csproj"
