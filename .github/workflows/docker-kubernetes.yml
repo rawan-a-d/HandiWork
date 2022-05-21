@@ -4,12 +4,13 @@ on:
   push:
     branches:
       - master
-    # build and push the images only if one of the microservices changed
+    # build and push the images only if one of the microservices or K8S folder changed
     paths:
       - "Auth"
       - "Client"
       - "Services"
       - "Users"
+      - "K8S"
 
 env:
   DATREE_TOKEN: ${{ secrets.DATREE_TOKEN }}
