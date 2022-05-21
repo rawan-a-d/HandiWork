@@ -1,4 +1,5 @@
 using AutoMapper;
+using MessagingModels;
 using Services.Dtos;
 using Services.Models;
 
@@ -18,6 +19,19 @@ namespace Services.Profiles
 			CreateMap<ServiceCategoryUpdateDto, ServiceCategory>();
 
 			CreateMap<Photo, PhotoDto>();
+
+			CreateMap<UserCreated, User>()
+				.ForMember(dest => dest.ExternalId, opt =>
+					opt.MapFrom(src => src.Id)
+				);
+			CreateMap<UserUpdated, User>()
+				.ForMember(dest => dest.ExternalId, opt =>
+					opt.MapFrom(src => src.Id)
+				);
+			CreateMap<UserDeleted, User>()
+				.ForMember(dest => dest.ExternalId, opt =>
+					opt.MapFrom(src => src.Id)
+				);
 		}
 	}
 }

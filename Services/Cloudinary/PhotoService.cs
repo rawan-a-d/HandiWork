@@ -8,13 +8,13 @@ namespace Services.Data
 	public class PhotoService : IPhotoService
 	{
 		private readonly Cloudinary _cloudinary;
-		public PhotoService(IOptions<CloudinarySettings> config)
+		public PhotoService(CloudinarySettings cloudinarySettings)
 		{
 			// Cloudinary account
 			var acc = new Account(
-				config.Value.CloudName,
-				config.Value.ApiKey,
-				config.Value.ApiSecret
+				cloudinarySettings.CloudName,
+				cloudinarySettings.ApiKey,
+				cloudinarySettings.ApiSecret
 			);
 
 			// Initialize _cloudinary object
