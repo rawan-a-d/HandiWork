@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
+//3. Handle env variables in production (Program)
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
