@@ -118,6 +118,9 @@ builder.Services.AddCors(options =>
 			.AllowAnyHeader();
 		});
 });
+
+// Health checks
+builder.Services.AddHealthChecks();
 // ----------------------
 
 
@@ -139,6 +142,8 @@ app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHealthChecks("/healthz");
 
 app.MapControllers();
 

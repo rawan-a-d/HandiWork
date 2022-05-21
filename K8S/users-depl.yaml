@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: users-depl
 spec:
-  replicas: 1
+  replicas: 2
   # select the template
   selector:
     matchLabels:
@@ -17,8 +17,29 @@ spec:
     spec:
       containers:
         - name: users
-          image: rawanad/handiwork-users
+          image: rawanad/handiwork-users:ffa15928a4e7048a1e46999eb55bcab11b509295
           resources: {}
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            timeoutSeconds: 10
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
 ---
 apiVersion: v1
 kind: Service

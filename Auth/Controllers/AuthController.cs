@@ -262,7 +262,8 @@ namespace Auth.Controllers
 			var jwtTokenHandler = new JwtSecurityTokenHandler();
 
 			// get security key
-			var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtConfig")["Secret"]);
+			//var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtConfig")["Secret"]);
+			var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT"));
 
 			var claims = await GetAllValidClaims(user);
 

@@ -1,0 +1,34 @@
+name: Docker Build
+
+on:
+  push:
+    branches: 
+      - '!master'
+  pull_request:
+    branches: 
+      - '**'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Users Docker image
+      run: |
+        docker build -t ${{ secrets.DH_USERNAME }}/handiwork-users-pr:${{ github.sha }} -f Users/Dockerfile ./Users
+
+    - name: Build Services Docker image
+      run: |
+        docker build -t ${{ secrets.DH_USERNAME }}/handiwork-services-pr:${{ github.sha }} -f Services/Dockerfile ./Services
+        
+    - name: Build Auth Docker image
+      run: |
+        docker build -t ${{ secrets.DH_USERNAME }}/handiwork-auth-pr:${{ github.sha }} -f Auth/Dockerfile ./Auth
+        
+    - name: Build Client Docker image
+      run: |
+        docker build -t ${{ secrets.DH_USERNAME }}/handiwork-client-pr:${{ github.sha }} -f Client/Dockerfile ./Client
