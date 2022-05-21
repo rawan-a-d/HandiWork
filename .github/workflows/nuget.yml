@@ -14,7 +14,7 @@ on:
 
 env:
   PROJECT_PATH: MessagingModels/MessagingModels.csproj
-  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}\output
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}/MessagingModels\output
   NUGET_SOURCE_URL: "https://api.nuget.org/v3/index.json"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
