@@ -8,7 +8,8 @@ namespace Services.Data
 	public class PhotoService : IPhotoService
 	{
 		private readonly Cloudinary _cloudinary;
-		public PhotoService(CloudinarySettings cloudinarySettings)
+
+    public PhotoService(CloudinarySettings cloudinarySettings)
 		{
 			// Cloudinary account
 			var acc = new Account(
