@@ -5,14 +5,18 @@ on:
     branches:
       - master
     # build and push the images only if one of the microservices changed
-    #paths:
-    #  - "Auth"
-    #  - "Client"
-    #  - "Services"
-    #  - "Users"
+    paths:
+      - "Auth"
+      - "Client"
+      - "Services"
+      - "Users"
 
 env:
   DATREE_TOKEN: ${{ secrets.DATREE_TOKEN }}
+  DH_USERNAME: ${{ secrets.DH_USERNAME }}
+  DH_PASSWORD: ${{ secrets.DH_PASSWORD }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_SHA: ${{ env.GITHUB_SHA }}
 
 jobs:
   k8sPolicyCheck:
@@ -32,46 +36,44 @@ jobs:
     runs-on: ubuntu-latest
 
     # run only if k8sPolicyCheck job was a success
-    #needs: k8sPolicyCheck
+    needs: k8sPolicyCheck
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Docker Login
         # You may pin to the exact commit or the version.
-        # uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b
         uses: docker/login-action@v2.0.0
         with:
           # Server address of Docker registry. If not set then will default to Docker Hub
           # registry: ${{ secrets.DH_URL }}
           # Username used to log against the Docker registry
-          username: ${{ secrets.DH_USERNAME }}
+          username: ${{ env.DH_USERNAME }}
           # Password or personal access token used to log against the Docker registry
-          password: ${{ secrets.DH_PASSWORD }}
+          password: ${{ env.DH_PASSWORD }}
           # Log out from the Docker registry at the end of a job
           logout: true
 
       - name: Docker build and push
         run: |
-          #docker build -t ${{ secrets.DH_USERNAME }}/handiwork-users:latest -t ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }} -f Users/Dockerfile ./Users
-          #docker push ${{ secrets.DH_USERNAME }}/handiwork-users:${{ github.sha }}
-          #docker push ${{ secrets.DH_USERNAME }}/handiwork-users:latest
+          #docker build -t ${{ env.DH_USERNAME }}/handiwork-users:latest -t ${{ env.DH_USERNAME }}/handiwork-users:${{ env.GITHUB_SHA }} -f Users/Dockerfile ./Users
+          #docker push ${{ env.DH_USERNAME }}/handiwork-users:${{ env.GITHUB_SHA }}
+          #docker push ${{ env.DH_USERNAME }}/handiwork-users:latest
 
-          #docker build -t ${{ secrets.DH_USERNAME }}/handiwork-services:latest -t ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }} -f Services/Dockerfile ./Services
-          #docker push ${{ secrets.DH_USERNAME }}/handiwork-services:${{ github.sha }}
-          #docker push ${{ secrets.DH_USERNAME }}/handiwork-services:latest
+          #docker build -t ${{ env.DH_USERNAME }}/handiwork-services:latest -t ${{ env.DH_USERNAME }}/handiwork-services:${{ env.GITHUB_SHA }} -f Services/Dockerfile ./Services
+          #docker push ${{ env.DH_USERNAME }}/handiwork-services:${{ env.GITHUB_SHA }}
+          #docker push ${{ env.DH_USERNAME }}/handiwork-services:latest
 
-          docker build -t ${{ secrets.DH_USERNAME }}/handiwork-auth:latest -t ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }} -f Auth/Dockerfile ./Auth
-          docker push ${{ secrets.DH_USERNAME }}/handiwork-auth:${{ github.sha }}
-          docker push ${{ secrets.DH_USERNAME }}/handiwork-auth:latest
+          docker build -t ${{ env.DH_USERNAME }}/handiwork-auth:latest -t ${{ env.DH_USERNAME }}/handiwork-auth:${{ env.GITHUB_SHA }} -f Auth/Dockerfile ./Auth
+          docker push ${{ env.DH_USERNAME }}/handiwork-auth:${{ env.GITHUB_SHA }}
+          docker push ${{ env.DH_USERNAME }}/handiwork-auth:latest
 
-          #docker build -t ${{ secrets.DH_USERNAME }}/handiwork-client:latest -t ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }} -f Client/Dockerfile ./Client
-          #docker push ${{ secrets.DH_USERNAME }}/handiwork-client:${{ github.sha }}
-          #docker push ${{ secrets.DH_USERNAME }}/handiwork-client:latest
+          #docker build -t ${{ env.DH_USERNAME }}/handiwork-client:latest -t ${{ env.DH_USERNAME }}/handiwork-client:${{ env.GITHUB_SHA }} -f Client/Dockerfile ./Client
+          #docker push ${{ env.DH_USERNAME }}/handiwork-client:${{ env.GITHUB_SHA }}
+          #docker push ${{ env.DH_USERNAME }}/handiwork-client:latest
 
       - name: Update Auth yaml file in place
         # You may pin to the exact commit or the version.
-        # uses: loveholidays/gitops-action-yaml-updater@c603741f5ab74071e3e73e2acfad4d66e529089c
         uses: loveholidays/gitops-action-yaml-updater@v1.0.0
         with:
           # TYPE of the new value to be updated
@@ -81,53 +83,49 @@ jobs:
           # Path to the yaml file
           filepath: K8S/auth-depl.yaml
           # Tag value for the new image
-          new-image-tag: ${{ github.sha }}
+          new-image-tag: ${{ env.GITHUB_SHA }}
 
-      #- name: Update Users yaml file in place
-      #  # You may pin to the exact commit or the version.
-      #  # uses: loveholidays/gitops-action-yaml-updater@c603741f5ab74071e3e73e2acfad4d66e529089c
-      #  uses: loveholidays/gitops-action-yaml-updater@v1.0.0
-      #  with:
-      #    # TYPE of the new value to be updated
-      #    mode: IMAGE_TAG
-      #    # Name of the container
-      #    container-name: users
-      #    # Path to the yaml file
-      #    filepath: K8S/users-depl.yaml
-      #    # Tag value for the new image
-      #    new-image-tag: ${{ github.sha }}
+      - name: Update Users yaml file in place
+        # You may pin to the exact commit or the version.
+        uses: loveholidays/gitops-action-yaml-updater@v1.0.0
+        with:
+          # TYPE of the new value to be updated
+          mode: IMAGE_TAG
+          # Name of the container
+          container-name: users
+          # Path to the yaml file
+          filepath: K8S/users-depl.yaml
+          # Tag value for the new image
+          new-image-tag: ${{ env.GITHUB_SHA }}
 
-      #- name: Update Services yaml file in place
-      #  # You may pin to the exact commit or the version.
-      #  # uses: loveholidays/gitops-action-yaml-updater@c603741f5ab74071e3e73e2acfad4d66e529089c
-      #  uses: loveholidays/gitops-action-yaml-updater@v1.0.0
-      #  with:
-      #    # TYPE of the new value to be updated
-      #    mode: IMAGE_TAG
-      #    # Name of the container
-      #    container-name: services
-      #    # Path to the yaml file
-      #    filepath: K8S/services-depl.yaml
-      #    # Tag value for the new image
-      #    new-image-tag: ${{ github.sha }}
+      - name: Update Services yaml file in place
+        # You may pin to the exact commit or the version.
+        uses: loveholidays/gitops-action-yaml-updater@v1.0.0
+        with:
+          # TYPE of the new value to be updated
+          mode: IMAGE_TAG
+          # Name of the container
+          container-name: services
+          # Path to the yaml file
+          filepath: K8S/services-depl.yaml
+          # Tag value for the new image
+          new-image-tag: ${{ env.GITHUB_SHA }}
 
-      #- name: Update Client yaml file in place
-      #  # You may pin to the exact commit or the version.
-      #  # uses: loveholidays/gitops-action-yaml-updater@c603741f5ab74071e3e73e2acfad4d66e529089c
-      #  uses: loveholidays/gitops-action-yaml-updater@v1.0.0
-      #  with:
-      #    # TYPE of the new value to be updated
-      #    mode: IMAGE_TAG
-      #    # Name of the container
-      #    container-name: client
-      #    # Path to the yaml file
-      #    filepath: K8S/client-depl.yaml
-      #    # Tag value for the new image
-      #    new-image-tag: ${{ github.sha }}
+      - name: Update Client yaml file in place
+        # You may pin to the exact commit or the version.
+        uses: loveholidays/gitops-action-yaml-updater@v1.0.0
+        with:
+          # TYPE of the new value to be updated
+          mode: IMAGE_TAG
+          # Name of the container
+          container-name: client
+          # Path to the yaml file
+          filepath: K8S/client-depl.yaml
+          # Tag value for the new image
+          new-image-tag: ${{ env.GITHUB_SHA }}
 
       - name: Add & Commit
         # You may pin to the exact commit or the version.
-        # uses: EndBug/add-and-commit@050a66787244b10a4874a2a5f682130263edc192
         uses: EndBug/add-and-commit@v9.0.0
         with:
           # Arguments for the git add command
@@ -137,15 +135,14 @@ jobs:
           # Whether to push the commit and, if any, its tags to the repo. It can also be used to set the git push arguments (more info in the README)
           push: true
           # The token used to make requests to the GitHub API. It's NOT used to make commits and should not be changed.
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ env.GITHUB_TOKEN }}
 
       - name: GitHub Push
         # You may pin to the exact commit or the version.
-        # uses: ad-m/github-push-action@40bf560936a8022e68a3c00e7d2abefaf01305a6
         uses: ad-m/github-push-action@v0.6.0
         with:
           # Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ env.GITHUB_TOKEN }}
           # Destination branch to push changes
           branch: master
           # Determines if force push is used
