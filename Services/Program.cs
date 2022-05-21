@@ -1,7 +1,11 @@
+using System.Text;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Services.Consumers;
 using Services.Data;
+using Services.Helpers;
 using Users.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +18,73 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // -------------------
-// Health checks
-builder.Services.AddHealthChecks();
+string jwtConfig;
+string rabbitMQ;
+string connectionString;
+CloudinarySettings cloudinarySettings;
 
-// Database
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+if (builder.Environment.IsProduction())
+{
+	jwtConfig = Environment.GetEnvironmentVariable("JWT");
+	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
+	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING_SERVICES");
+	cloudinarySettings = new CloudinarySettings
+	{
+		CloudName = Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME"),
+		ApiKey = Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY"),
+		ApiSecret = Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET")
+	};
+
+	// Database context - SQL server
+	Console.WriteLine("--> Using SqlServer Db");
+	builder.Services.AddDbContext<AppDbContext>(opt =>
+		// specify database type and name
+		opt.UseSqlServer(connectionString)
+	);
+}
+else
+{
+	jwtConfig = builder.Configuration["JwtConfig:Secret"];
+	rabbitMQ = $"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}";
+	connectionString = builder.Configuration.GetConnectionString("ServicesDB");
+	cloudinarySettings = builder.Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
+
+	// Database context - In memorys
+	Console.WriteLine("--> Using InMem Db");
+	builder.Services.AddDbContext<AppDbContext>(opt =>
+		opt.UseInMemoryDatabase("InMem")
+	);
+}
+
+// Authentication
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	// in case first one fails
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+// JWT token configuration
+.AddJwtBearer(jwt =>
+{
+	// how it should be encoded
+	var key = Encoding.ASCII.GetBytes(jwtConfig);
+
+	// jwt token settings
+	jwt.SaveToken = true;
+	jwt.TokenValidationParameters = new TokenValidationParameters
+	{
+		// validate third part of the token using the secret and check if it was configured and encrypted by us
+		ValidateIssuerSigningKey = true,
+		// define signing key (responsible for encrypting)
+		IssuerSigningKey = new SymmetricSecurityKey(key),
+		ValidateIssuer = false,
+		ValidateAudience = false,
+		ValidateLifetime = true,
+		// should be true in production
+		RequireExpirationTime = false,
+	};
+});
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -27,9 +93,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IServiceRepo, ServiceRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IServiceCategoryRepo, ServiceCategoryRepo>();
+builder.Services.AddScoped<IPhotoRepo, PhotoRepo>();
 
-// Event Processor
-//builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+// Cloudinary
+builder.Services.AddSingleton<CloudinarySettings>(cloudinarySettings);
+//builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -40,10 +109,11 @@ builder.Services.AddMassTransit(config =>
 	// register consumers
 	config.AddConsumer<UserUpdatedConsumer>();
 	config.AddConsumer<UserCreatedConsumer>();
+	config.AddConsumer<UserDeletedConsumer>();
 
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
-		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+		cfg.Host(rabbitMQ);
 
 		// These are the consumers
 		// creates exchange and queue with this name
@@ -56,6 +126,11 @@ builder.Services.AddMassTransit(config =>
 		{
 			// define the consumer class
 			c.ConfigureConsumer<UserCreatedConsumer>(ctx);
+		});
+		cfg.ReceiveEndpoint("Services_user-delete-endpoint", c =>
+		{
+			// define the consumer class
+			c.ConfigureConsumer<UserDeletedConsumer>(ctx);
 		});
 	});
 });
@@ -76,6 +151,9 @@ builder.Services.AddCors(options =>
 			.AllowAnyHeader();
 		});
 });
+
+// Health checks
+builder.Services.AddHealthChecks();
 // -------------------
 
 var app = builder.Build();
@@ -89,6 +167,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHealthChecks("/healthz");

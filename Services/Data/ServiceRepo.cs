@@ -37,7 +37,10 @@ namespace Services.Data
 		public IEnumerable<Service> GetServicesForUser(int userId)
 		{
 			return _context.Services
-				.Where(s => s.UserId == userId);
+				.Where(s => s.UserId == userId)
+				.Include(sc => sc.ServiceCategory)
+				.Include(p => p.Photos)
+				.ToList();
 		}
 
 		/// <summary>
@@ -51,6 +54,8 @@ namespace Services.Data
 		{
 			return _context.Services
 				.Where(s => s.Id == serviceId && s.UserId == userId)
+				.Include(p => p.Photos)
+				.Include(sc => sc.ServiceCategory)
 				.FirstOrDefault();
 		}
 

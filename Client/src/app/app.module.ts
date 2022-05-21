@@ -26,12 +26,15 @@ import { UsersComponent } from './moderator/users/users.component';
 import { ServiceCategoriesComponent } from './moderator/service-categories/service-categories.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
-import { PossibleServicesComponent } from './home/possible-services/possible-services.component';
 import { SearchResultComponent } from './home/search-result/search-result.component';
 import { ManageSkillsComponent } from './profile/manage-skills/manage-skills.component';
 import { ManageSkillDialogComponent } from './profile/manage-skill-dialog/manage-skill-dialog.component';
 import { AuthHttpInterceptor } from './_interceptors/auth-http.interceptor';
 import { ManageServiceCategoryDialogComponent } from './moderator/manage-service-category-dialog/manage-service-category-dialog.component';
+import { PhotoEditorComponent } from './profile/photo-editor/photo-editor.component';
+import { PossibleServicesCategoriesComponent } from './home/possible-services-categories/possible-services-categories.component';
+import { FileUploadModule } from 'ng2-file-upload';
+import { CommonModule } from '@angular/common';
 
 const matModules = [
 	MatFormFieldModule,
@@ -60,10 +63,11 @@ const matModules = [
 		ManageServiceCategoryDialogComponent,
 		NavbarComponent,
 		HomeComponent,
-		PossibleServicesComponent,
+		PossibleServicesCategoriesComponent,
 		SearchResultComponent,
 		ManageSkillsComponent,
 		ManageSkillDialogComponent,
+		PhotoEditorComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -72,10 +76,13 @@ const matModules = [
 		ReactiveFormsModule,
 		HttpClientModule,
 		matModules,
-		AppRoutingModule
+		CommonModule,
+		AppRoutingModule,
+		FileUploadModule
 	],
 	exports: [
-		matModules
+		matModules,
+		FileUploadModule
 	],
 	providers: [
 		{

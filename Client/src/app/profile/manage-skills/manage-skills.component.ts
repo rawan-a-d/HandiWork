@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Service } from 'src/app/_models/Service';
+import { ServicesService } from 'src/app/_services/services.service';
 import { ManageSkillDialogComponent } from '../manage-skill-dialog/manage-skill-dialog.component';
 
 export interface SkillDialogData {
@@ -14,12 +16,14 @@ export interface SkillDialogData {
 	styleUrls: ['./manage-skills.component.css']
 })
 export class ManageSkillsComponent implements OnInit {
-	skill = "";
+	service: Service;
 	info = "";
+	services: Service[];
 
-	constructor(public dialog: MatDialog) { }
+	constructor(public dialog: MatDialog, private servicesService: ServicesService) { }
 
 	ngOnInit(): void {
+		this.getServices(1);
 	}
 
 	openDialog(title: string): void {
@@ -27,28 +31,34 @@ export class ManageSkillsComponent implements OnInit {
 			width: '300px',
 			data: {
 				title: title,
-				skill: this.skill,
+				service: this.service,
 				info: this.info
 			},
 		});
 
 		dialogRef.afterClosed().subscribe(result => {
-			console.log('The dialog was closed ', result);
-			this.skill = result?.skill;
+			this.service = result?.service;
 			this.info = result?.info;
 
-			console.log(this.skill);
-			console.log(this.info);
-
 			// send request to backend
-			if (title == "New skill") {
+			if (title == "New service") {
 
 			}
-			else if (title == "Edit skill") {
+			else if (title == "Edit service") {
 
 			}
 
 			// empty fields
 		});
+	}
+
+	// get services for a user
+	getServices(userId: number) {
+		this.servicesService.getAll(userId)
+			.subscribe(data => {
+				this.services = <Service[]>data;
+
+				this.service = this.services[0];
+			})
 	}
 }

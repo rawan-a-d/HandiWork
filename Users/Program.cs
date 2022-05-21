@@ -2,33 +2,74 @@ using Microsoft.EntityFrameworkCore;
 using Users.Data;
 using MassTransit;
 using Users.Consumers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // ----------------
-// Health checks
-builder.Services.AddHealthChecks();
+string jwtConfig;
+string rabbitMQ;
+string connectionString;
 
-// Database context
 if (builder.Environment.IsProduction())
 {
-	Console.WriteLine("--> Using SqlServer Db");
+	jwtConfig = Environment.GetEnvironmentVariable("JWT");
+	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
+	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
 	// Database context - SQL server
+	Console.WriteLine("--> Using SqlServer Db");
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		opt.UseSqlServer(builder.Configuration.GetConnectionString("UsersDB"))
+		opt.UseSqlServer(connectionString)
 	);
 }
 else
 {
-	Console.WriteLine("--> Using InMem Db");
+	jwtConfig = builder.Configuration["JwtConfig:Secret"];
+	rabbitMQ = $"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}";
+	connectionString = builder.Configuration.GetConnectionString("UsersDB");
+
 	// Database context - In memory
+	Console.WriteLine("--> Using InMem Db");
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
 		opt.UseInMemoryDatabase("InMem")
 	);
 }
+
+// Authentication
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	// in case first one fails
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+// JWT token configuration
+.AddJwtBearer(jwt =>
+{
+	// how it should be encoded
+	var key = Encoding.ASCII.GetBytes(jwtConfig);
+
+	// jwt token settings
+	jwt.SaveToken = true;
+	jwt.TokenValidationParameters = new TokenValidationParameters
+	{
+		// validate third part of the token using the secret and check if it was configured and encrypted by us
+		ValidateIssuerSigningKey = true,
+		// define signing key (responsible for encrypting)
+		IssuerSigningKey = new SymmetricSecurityKey(key),
+		ValidateIssuer = false,
+		ValidateAudience = false,
+		ValidateLifetime = true,
+		// should be true in production
+		RequireExpirationTime = false,
+	};
+});
 
 // User Repo
 builder.Services.AddScoped<IUserRepo, UserRepo>();
@@ -44,8 +85,8 @@ builder.Services.AddMassTransit(config =>
 
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
-		Console.WriteLine($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
-		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+		Console.WriteLine(rabbitMQ);
+		cfg.Host(rabbitMQ);
 
 		// This is the consumer
 		// creates exchange and queue with this name
@@ -73,6 +114,9 @@ builder.Services.AddCors(options =>
 			.AllowAnyHeader();
 		});
 });
+
+// Health checks
+builder.Services.AddHealthChecks();
 // ----------------
 
 builder.Services.AddControllers();
@@ -92,6 +136,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHealthChecks("/healthz");

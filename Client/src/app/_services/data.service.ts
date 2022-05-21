@@ -9,7 +9,7 @@ export class DataService {
 	info = new BehaviorSubject('information');
 	http: HttpClient;
 
-	constructor(@Inject(String) private url: string, @Inject(HttpClient) http: HttpClient) {
+	constructor(@Inject(String) private url: string, @Inject(String) private additionUrl: string, @Inject(HttpClient) http: HttpClient) {
 		this.http = http;
 	}
 

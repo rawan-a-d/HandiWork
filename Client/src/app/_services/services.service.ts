@@ -1,14 +1,84 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { DataService } from './data.service';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class ServicesService extends DataService {
+export class ServicesService {
+	info = new BehaviorSubject('information');
+	http: HttpClient;
+	url: string;
 
-	constructor(http: HttpClient) { // users/1/services
-		super(environment.apiUrlUsers, http);
+	constructor(@Inject(HttpClient) http: HttpClient) {
+		this.http = http;
+		this.url = environment.apiUrlServices
+	}
+
+	getInfo(): Observable<string> {
+		return this.info.asObservable();
+	}
+
+	getInfoValue(): string {
+		return this.info.getValue();
+	}
+
+	setInfo(val: string) {
+		this.info.next(val);
+	}
+
+	getAll(userId: number) {
+		return this.http.get(this.url + '/' + userId + '/services')
+			.pipe(
+				map(
+					response => response
+				)
+			)
+	}
+
+	get(userId: number, serviceId: number) {
+		return this.http.get(this.url + '/' + userId + '/services/' + serviceId)
+			.pipe(
+				map(
+					response => response
+				)
+			)
+	}
+
+	create(userId: number, resource: any) {
+		return this.http.post(this.url + '/' + userId + environment.apiUrlServices, JSON.stringify(resource))
+			.pipe(
+				map(
+					response => response
+				)
+			)
+	}
+
+	update(userId: number, resource: any) {
+		this.setInfo('Object updated');
+
+		return this.http.put(this.url + '/' + userId + environment.apiUrlServices + '/' + resource.id, JSON.stringify(resource))
+			.pipe(
+				map(
+					response => response
+				)
+			)
+	}
+
+
+	delete(userId: number, serviceId: number) {
+		this.setInfo('Object deleted');
+
+		return this.http.delete(this.url + '/' + userId + environment.apiUrlServices + '/' + serviceId)
+			.pipe(
+				map(
+					response => response
+				)
+			)
+	}
+
+	deletePhoto(userId: number, serviceId: number, photoId: number) {
+		return this.http.delete(this.url + '/' + userId + '/services/' + serviceId + '/photos/' + photoId);
 	}
 }
