@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MessagingModels;
+using Auth.Models;
 
 namespace Auth.Controllers
 {
@@ -18,16 +18,16 @@ namespace Auth.Controllers
 	[ApiController]
 	public class AuthController : ControllerBase
 	{
-		private readonly UserManager<IdentityUser> _userManager;
-		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly UserManager<User> _userManager;
+		private readonly RoleManager<Role> _roleManager;
 		private readonly ILogger<AuthController> _logger;
 		private readonly IConfiguration _configuration;
 		private readonly IMapper _mapper;
 		private readonly IPublishEndpoint _publishEndPoint;
 
 		public AuthController(
-				UserManager<IdentityUser> userManager,
-				RoleManager<IdentityRole> roleManager,
+				UserManager<User> userManager,
+				RoleManager<Role> roleManager,
 				ILogger<AuthController> logger,
 				IConfiguration configuration,
 				IMapper mapper,
@@ -50,29 +50,15 @@ namespace Auth.Controllers
 		[Route("Register")]
 		public async Task<IActionResult> Register([FromBody] UserCreateDto userCreateDto)
 		{
-			var existingUser = await _userManager.FindByEmailAsync(userCreateDto.Email);
-
-			// if user exists
-			if (existingUser != null)
-			{
-				return BadRequest(new AuthResult()
-				{
-					Errors = new List<string> {
-						"Email already in use"
-					},
-					Success = false
-				});
-			}
-
 			// create user
-			var newUser = _mapper.Map<IdentityUser>(userCreateDto);
+			var newUser = _mapper.Map<User>(userCreateDto);
 
 			var isCreated = await _userManager.CreateAsync(newUser, userCreateDto.Password);
 
 			if (isCreated.Succeeded)
 			{
 				// add the user to a role
-				await _userManager.AddToRoleAsync(newUser, "AppUser");
+				await _userManager.AddToRoleAsync(newUser, "User");
 
 				// generate token
 				var authResult = await GenerateJwtToken(newUser);
@@ -81,7 +67,7 @@ namespace Auth.Controllers
 				await _publishEndPoint.Publish<UserCreated>(new
 				{
 					Id = newUser.Id,
-					Name = newUser.UserName,
+					Name = newUser.Name,
 					Email = newUser.Email
 				});
 
@@ -142,7 +128,7 @@ namespace Auth.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Route("Roles")]
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 		public async Task<IActionResult> CreateRole([FromBody] RoleCreateDto roleCreateDto)
 		{
 			// check if role already exists
@@ -150,7 +136,7 @@ namespace Auth.Controllers
 
 			if (!roleExists)
 			{
-				var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleCreateDto.Name));
+				var roleResult = await _roleManager.CreateAsync(new Role(roleCreateDto.Name));
 
 				// check if role was added successfully
 				if (roleResult.Succeeded)
@@ -175,7 +161,7 @@ namespace Auth.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Route("AddUserToRole")]
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 		public async Task<IActionResult> AddUserToRole([FromBody] RoleUserDto roleUserDto)
 		{
 			// check if user exists
@@ -225,7 +211,7 @@ namespace Auth.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[Route("RemoveUserFromRole")]
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Moderator")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 		public async Task<IActionResult> RemoveUserFromRole([FromBody] RoleUserDto roleUserDto)
 		{
 			// check if user exists
@@ -271,7 +257,7 @@ namespace Auth.Controllers
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>
-		private async Task<AuthResult> GenerateJwtToken(IdentityUser user)
+		private async Task<AuthResult> GenerateJwtToken(User user)
 		{
 			var jwtTokenHandler = new JwtSecurityTokenHandler();
 
@@ -309,11 +295,11 @@ namespace Auth.Controllers
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>
-		private async Task<List<Claim>> GetAllValidClaims(IdentityUser user)
+		private async Task<List<Claim>> GetAllValidClaims(User user)
 		{
 			// generic list of claims
 			var claims = new List<Claim> {
-				new Claim("Id", user.Id),
+				new Claim("Id", user.Id.ToString()),
 				new Claim(JwtRegisteredClaimNames.Email, user.Email),
 				new Claim(JwtRegisteredClaimNames.Sub, user.Email),
 				// unique id used to generate a new token

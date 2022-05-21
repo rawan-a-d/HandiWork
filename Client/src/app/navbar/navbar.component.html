@@ -4,7 +4,7 @@
 		<a mat-button *ngIf="authService.isLoggedIn() && authService.currentUser.moderator"
 			routerLink="/moderator">Moderator</a>
 		<!--<a mat-button *ngIf="authService.isLoggedIn()" [routerLink]="['/profile', authService.userId]">Profile</a>-->
-		<a mat-button *ngIf="authService.isLoggedIn()" [routerLink]="['/profile']">Profile</a>
+		<a mat-button *ngIf="authService.isLoggedIn()" [routerLink]="['/user', authService.currentUser.Id]">Profile</a>
 		<a mat-button *ngIf="!authService.isLoggedIn()" routerLink="/login">Login</a>
 		<a mat-button *ngIf="authService.isLoggedIn()" (click)="logout()">Logout</a>
 	</div>

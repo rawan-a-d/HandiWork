@@ -7,23 +7,32 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // ----------------
-// Health checks
-builder.Services.AddHealthChecks();
+string jwtConfig;
+string rabbitMQ;
+string connectionString;
 
 // Database context
 if (builder.Environment.IsProduction())
 {
-	Console.WriteLine("--> Using SqlServer Db");
+	jwtConfig = Environment.GetEnvironmentVariable("JWT");
+	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
+	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
 	// Database context - SQL server
+	Console.WriteLine("--> Using SqlServer Db");
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		opt.UseSqlServer(builder.Configuration.GetConnectionString("UsersDB"))
+		opt.UseSqlServer(connectionString)
 	);
 }
 else
 {
-	Console.WriteLine("--> Using InMem Db");
+	jwtConfig = builder.Configuration["JwtConfig:Secret"];
+	rabbitMQ = $"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}";
+	connectionString = builder.Configuration.GetConnectionString("UsersDB");
+
 	// Database context - In memory
+	Console.WriteLine("--> Using InMem Db");
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
 		opt.UseInMemoryDatabase("InMem")
@@ -44,8 +53,8 @@ builder.Services.AddMassTransit(config =>
 
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
-		Console.WriteLine($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
-		cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
+		Console.WriteLine(rabbitMQ);
+		cfg.Host(rabbitMQ);
 
 		// This is the consumer
 		// creates exchange and queue with this name
@@ -73,6 +82,9 @@ builder.Services.AddCors(options =>
 			.AllowAnyHeader();
 		});
 });
+
+// Health checks
+builder.Services.AddHealthChecks();
 // ----------------
 
 builder.Services.AddControllers();

@@ -1,8 +1,8 @@
 using System.Text;
 using Auth.Data;
+using Auth.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -10,21 +10,31 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // ----------------------
-// Health checks
-builder.Services.AddHealthChecks();
+string jwtConfig;
+string rabbitMQ;
+string connectionString;
 
 if (builder.Environment.IsProduction())
 {
+	jwtConfig = Environment.GetEnvironmentVariable("JWT");
+	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
+	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+	// DB
 	Console.WriteLine("--> Using SqlServer Db");
 	// Database context - SQL server
 	builder.Services.AddDbContext<AppDbContext>(opt =>
 		// specify database type and name
-		//opt.UseSqlServer(builder.Configuration.GetConnectionString("IdentityDB"))
-		opt.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING"))
+		opt.UseSqlServer(connectionString)
 	);
 }
 else
 {
+	jwtConfig = builder.Configuration["JwtConfig:Secret"];
+	rabbitMQ = $"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}";
+	connectionString = builder.Configuration.GetConnectionString("IdentityDB");
+
+	// DB
 	Console.WriteLine("--> Using InMem Db");
 	// Database context - In memory
 	builder.Services.AddDbContext<AppDbContext>(opt =>
@@ -45,8 +55,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(jwt =>
 {
 	// how it should be encoded
-	//var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Secret"]);
-	var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT"));
+	var key = Encoding.ASCII.GetBytes(jwtConfig);
 
 	// jwt token settings
 	jwt.SaveToken = true;
@@ -65,8 +74,14 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Identity configuration
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-	.AddEntityFrameworkStores<AppDbContext>();
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+//	.AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentity<User, Role>(options =>
+{
+	options.SignIn.RequireConfirmedAccount = true;
+	options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<AppDbContext>();
 
 // Configuration
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
@@ -80,8 +95,8 @@ builder.Services.AddMassTransit(config =>
 	config.UsingRabbitMq((ctx, cfg) =>
 	{
 		//cfg.Host("amqp://guest:guest@localhost:5672");
-		//cfg.Host($"amqp://guest:guest@{builder.Configuration["RabbitMQHost"]}:{builder.Configuration["RabbitMQPort"]}");
-		cfg.Host(Environment.GetEnvironmentVariable("RABBIT_MQ"));
+		Console.WriteLine(rabbitMQ);
+		cfg.Host(rabbitMQ);
 	});
 });
 
@@ -101,6 +116,9 @@ builder.Services.AddCors(options =>
 			.AllowAnyHeader();
 		});
 });
+
+// Health checks
+builder.Services.AddHealthChecks();
 // ----------------------
 
 

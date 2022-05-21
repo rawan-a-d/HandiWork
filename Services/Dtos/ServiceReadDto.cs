@@ -2,6 +2,10 @@ using Services.Models;
 
 namespace Services.Dtos
 {
+	/// <summary>
+	/// ServiceReadDto is similar to Service except that:
+	/// it makes use of PhotoDto and ServiceCategoryDto so it doesn't cause a circular reference exception
+	/// </summary>
 	public class ServiceReadDto
 	{
 		public int Id { get; set; }
@@ -12,8 +16,8 @@ namespace Services.Dtos
 
 		public int ServiceCategoryId { get; set; }
 
-		//// navigation property
-		//public ServiceCategory ServiceCategory { get; set; }
-		//public User User { get; set; }
+		public ServiceCategoryReadDto ServiceCategory { get; set; }
+
+		public ICollection<PhotoDto> Photos { get; set; }
 	}
 }

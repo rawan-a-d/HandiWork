@@ -2,6 +2,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Services.Consumers;
 using Services.Data;
+using Services.Helpers;
 using Users.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,20 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
 // Database
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+if (builder.Environment.IsProduction())
+{
+	Console.WriteLine("--> Using SqlServer Db");
+	// Database context - SQL server
+	builder.Services.AddDbContext<AppDbContext>(opt =>
+		// specify database type and name
+		opt.UseSqlServer(builder.Configuration.GetConnectionString("ServicesDB"))
+	);
+}
+else
+{
+	Console.WriteLine("--> Using InMem Db");
+	builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+}
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -27,9 +41,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IServiceRepo, ServiceRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IServiceCategoryRepo, ServiceCategoryRepo>();
+builder.Services.AddScoped<IPhotoRepo, PhotoRepo>();
 
-// Event Processor
-//builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+// Cloudinary
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

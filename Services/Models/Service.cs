@@ -17,8 +17,11 @@ namespace Services.Models
 		[Required]
 		public int ServiceCategoryId { get; set; }
 
-		// navigation property
+		// navigation properties
 		public ServiceCategory ServiceCategory { get; set; }
+
 		public User User { get; set; }
+
+		public ICollection<Photo> Photos { get; set; }
 	}
 }

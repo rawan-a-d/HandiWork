@@ -10,14 +10,23 @@ namespace Services.Controllers
 	[ApiController]
 	public class ServicesController : ControllerBase
 	{
-		private readonly IServiceRepo _repository;
+		private readonly IServiceRepo _serviceRepository;
 		private readonly IServiceCategoryRepo _serviceCategoryRepository;
+		private readonly IPhotoRepo _photoRepository;
+		private readonly IPhotoService _photoService;
 		private readonly IMapper _mapper;
 
-		public ServicesController(IServiceRepo repository, IServiceCategoryRepo serviceCategoryRepository, IMapper mapper)
+		public ServicesController(
+			IServiceRepo serviceRepository,
+			IServiceCategoryRepo serviceCategoryRepository,
+			IPhotoRepo photoRepository,
+			IPhotoService photoService,
+			IMapper mapper)
 		{
-			_repository = repository;
+			_serviceRepository = serviceRepository;
 			_serviceCategoryRepository = serviceCategoryRepository;
+			_photoRepository = photoRepository;
+			_photoService = photoService;
 			_mapper = mapper;
 		}
 
@@ -42,8 +51,8 @@ namespace Services.Controllers
 
 			var serviceModel = _mapper.Map<Service>(serviceCreateDto);
 
-			_repository.CreateService(userId, serviceModel);
-			_repository.SaveChanges();
+			_serviceRepository.CreateService(userId, serviceModel);
+			_serviceRepository.SaveChanges();
 
 			var serviceReadDto = _mapper.Map<ServiceReadDto>(serviceModel);
 
@@ -63,9 +72,7 @@ namespace Services.Controllers
 		{
 			// TODO: validate user is logged in
 
-			var services = _mapper.Map<IEnumerable<ServiceReadDto>>(_repository.GetServicesForUser(userId));
-
-			//"dfkgc".StartsWithUpper()
+			var services = _mapper.Map<IEnumerable<ServiceReadDto>>(_serviceRepository.GetServicesForUser(userId));
 
 			return Ok(services);
 		}
@@ -82,7 +89,7 @@ namespace Services.Controllers
 			// TODO: validate user is logged in
 
 			// get service
-			var service = _repository.GetService(serviceId, userId);
+			var service = _serviceRepository.GetService(serviceId, userId);
 
 			if (service == null)
 			{
@@ -105,7 +112,7 @@ namespace Services.Controllers
 			// TODO: validate user is logged in (JWT)
 			// TODO: validate user is owner (if not unauthorized)
 
-			var service = _repository.GetService(serviceId, userId);
+			var service = _serviceRepository.GetService(serviceId, userId);
 			if (service == null)
 			{
 				return NotFound();
@@ -115,9 +122,9 @@ namespace Services.Controllers
 			_mapper.Map(serviceUpdateDto, service);
 
 			// update service
-			_repository.UpdateService(service);
+			_serviceRepository.UpdateService(service);
 			// save to db
-			_repository.SaveChanges();
+			_serviceRepository.SaveChanges();
 
 			return NoContent();
 		}
@@ -135,16 +142,104 @@ namespace Services.Controllers
 			// TODO: validate user is owner (if not unauthorized)
 
 			// get service
-			var service = _repository.GetService(serviceId, userId);
+			var service = _serviceRepository.GetService(serviceId, userId);
 
-			_repository.DeleteService(service);
+			_serviceRepository.DeleteService(service);
 
-			if (_repository.SaveChanges())
+			if (_serviceRepository.SaveChanges())
 			{
 				return Ok();
 			}
 
 			return BadRequest("Service cannot be removed");
+		}
+
+		[HttpPost("{serviceId}/photos")]
+		public async Task<ActionResult<PhotoDto>> AddPhoto(int userId, int serviceId, IFormFile file)
+		{
+			// get service object with the photos
+			var service = _serviceRepository.GetService(serviceId, userId);
+
+			if (service == null)
+			{
+				return NotFound("Service does not exist");
+			}
+
+			// add new photo to Cloudinary
+			var result = await _photoService.AddPhotoAsync(file);
+
+			// if there was an error
+			if (result.Error != null)
+			{
+				return BadRequest(result.Error.Message);
+			}
+
+			// Create new photo object using the result
+			var photo = new Photo
+			{
+				Url = result.SecureUrl.AbsoluteUri,
+				PublicId = result.PublicId
+			};
+
+			// add photo to photos array
+			//_photoRepository.CreatePhoto(photo);
+			service.Photos.Add(photo);
+
+			// save changes to db
+			if (_photoRepository.SaveChanges())
+			{
+				return CreatedAtRoute("GetService", new { userId = userId, serviceId = serviceId }, _mapper.Map<PhotoDto>(photo));
+			}
+
+			return BadRequest("Problem adding photos");
+		}
+
+		/// <summary>
+		/// Delete a photo
+		/// </summary>
+		/// <param name="photoId">photo id</param>
+		/// <returns></returns>
+		[HttpDelete("{serviceId}/photos/{photoId}")]
+		public async Task<ActionResult> DeletePhoto(int userId, int serviceId, int photoId)
+		{
+			// get service object with the photos
+			var service = _serviceRepository.GetService(serviceId, userId);
+
+			if (service == null)
+			{
+				return NotFound("Service does not exist");
+			}
+
+			// find photo
+			var photo = service.Photos.FirstOrDefault(x => x.Id == photoId);
+
+			if (photo == null)
+			{
+				return NotFound();
+			}
+
+			// remove photo
+			// 1. from Cloudinary
+			if (photo.PublicId != null)
+			{
+				// delete photo from Cloudinary
+				var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+
+				if (result.Error != null)
+				{
+					return BadRequest(result.Error.Message);
+				}
+			}
+			// 2. from DB
+			_photoRepository.DeletePhoto(photo);
+
+			// save to db
+			if (_photoRepository.SaveChanges())
+			{
+				return Ok();
+			}
+
+			return BadRequest("Failed to delete photo");
 		}
 	}
 }
