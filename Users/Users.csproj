@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-    <ProjectReference Include="..\MessagingModels\MessagingModels.csproj" />
-=======
     <!--<ProjectReference Include="..\MessagingModels\MessagingModels.csproj" />-->
->>>>>>> b9340ea1e8adf5841a6969c0feb36d4c7d27eb41
   </ItemGroup>
 </Project>
