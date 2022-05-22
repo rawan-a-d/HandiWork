@@ -6,10 +6,10 @@ on:
       - master
     # build and push the images only if one of the microservices changed
     paths:
-      - "Auth"
-      - "Client"
-      - "Services"
-      - "Users"
+      - "Auth/**"
+      - "Client/**"
+      - "Services/**"
+      - "Users/**"
 
 env:
   DH_USERNAME: ${{ secrets.DH_USERNAME }}
