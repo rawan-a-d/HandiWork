@@ -1,4 +1,4 @@
-name: ValidateDocker Build
+name: Validate Kubernetes Configurations & Docker Build
 
 on:
   push:
@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
       - "**"
+
+env:
+  DATREE_TOKEN: ${{ secrets.DATREE_TOKEN }}
 
 jobs:
   # Validate Kubernetes files
@@ -26,6 +29,9 @@ jobs:
   # Build Docker images and tag them
   build:
     runs-on: ubuntu-latest
+
+    # run only if k8sPolicyCheck job was a success
+    #needs: k8sPolicyCheck
 
     steps:
       - uses: actions/checkout@v3

@@ -4,16 +4,14 @@ on:
   push:
     branches:
       - master
-    # build and push the images only if one of the microservices or K8S folder changed
+    # build and push the images only if one of the microservices changed
     paths:
       - "Auth"
       - "Client"
       - "Services"
       - "Users"
-      - "K8S"
 
 env:
-  DATREE_TOKEN: ${{ secrets.DATREE_TOKEN }}
   DH_USERNAME: ${{ secrets.DH_USERNAME }}
   DH_PASSWORD: ${{ secrets.DH_PASSWORD }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -22,9 +20,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    # run only if k8sPolicyCheck job was a success
-    needs: k8sPolicyCheck
 
     steps:
       - uses: actions/checkout@v3
@@ -42,20 +37,26 @@ jobs:
           # Log out from the Docker registry at the end of a job
           logout: true
 
-      - name: Docker build and push
+      - name: Docker build and push Users
         run: |
           docker build -t ${{ env.DH_USERNAME }}/handiwork-users:latest -t ${{ env.DH_USERNAME }}/handiwork-users:${{ env.GITHUB_SHA }} -f Users/Dockerfile ./Users
           docker push ${{ env.DH_USERNAME }}/handiwork-users:${{ env.GITHUB_SHA }}
           docker push ${{ env.DH_USERNAME }}/handiwork-users:latest
 
+      - name: Docker build and push Services
+        run: |
           docker build -t ${{ env.DH_USERNAME }}/handiwork-services:latest -t ${{ env.DH_USERNAME }}/handiwork-services:${{ env.GITHUB_SHA }} -f Services/Dockerfile ./Services
           docker push ${{ env.DH_USERNAME }}/handiwork-services:${{ env.GITHUB_SHA }}
           docker push ${{ env.DH_USERNAME }}/handiwork-services:latest
 
+      - name: Docker build and push Auth
+        run: |
           docker build -t ${{ env.DH_USERNAME }}/handiwork-auth:latest -t ${{ env.DH_USERNAME }}/handiwork-auth:${{ env.GITHUB_SHA }} -f Auth/Dockerfile ./Auth
           docker push ${{ env.DH_USERNAME }}/handiwork-auth:${{ env.GITHUB_SHA }}
           docker push ${{ env.DH_USERNAME }}/handiwork-auth:latest
 
+      - name: Docker build and push Client
+        run: |
           docker build -t ${{ env.DH_USERNAME }}/handiwork-client:latest -t ${{ env.DH_USERNAME }}/handiwork-client:${{ env.GITHUB_SHA }} -f Client/Dockerfile ./Client
           docker push ${{ env.DH_USERNAME }}/handiwork-client:${{ env.GITHUB_SHA }}
           docker push ${{ env.DH_USERNAME }}/handiwork-client:latest
