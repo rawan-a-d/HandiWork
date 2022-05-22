@@ -1,4 +1,4 @@
-name: Validate Kubernetes Configurations & Docker Build
+name: Validate Kubernetes & Docker Build
 
 on:
   push:
