@@ -11,6 +11,9 @@ on:
       - "Services/**"
       - "Users/**"
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
 env:
   DH_USERNAME: ${{ secrets.DH_USERNAME }}
   DH_PASSWORD: ${{ secrets.DH_PASSWORD }}
