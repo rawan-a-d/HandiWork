@@ -3,10 +3,10 @@ name: Validate Kubernetes & Docker Build
 on:
   push:
     branches:
-      - "!main"
-  pull_request:
-    branches:
-      - "**"
+      - "!master"
+  #pull_request:
+  #  branches:
+  #    - "**"
 
 env:
   DATREE_TOKEN: ${{ secrets.DATREE_TOKEN }}
