@@ -16,6 +16,7 @@ namespace Auth.Data
 				);
 			}
 		}
+
 		private static async Task SeedData(UserManager<User> userManager, RoleManager<Role> roleManager)
 		{
 			// check if users table contains any users
