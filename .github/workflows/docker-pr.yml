@@ -3,6 +3,7 @@ name: Validate Kubernetes & Docker Build
 on:
   push:
     branches:
+      # all branches except master
       - "*"
       - "!master"
   pull_request:
