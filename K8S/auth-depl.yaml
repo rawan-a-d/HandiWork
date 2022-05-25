@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-depl
+  namespace: handiwork
 spec:
   replicas: 2
   # select the template
@@ -17,7 +18,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rawanad/handiwork-auth:9d529ed1090f05aa232057b832efbbf4fa9f112b
+          image: rawanad/handiwork-auth:latest
           resources: {}
 
           readinessProbe:
