@@ -2,23 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: users-depl
+  name: services-depl
   namespace: handiwork
 spec:
   replicas: 2
   # select the template
   selector:
     matchLabels:
-      app: users
+      app: services
   # define the pod and the container we want to use
   template:
     metadata:
       labels:
-        app: users
+        app: services
     spec:
       containers:
-        - name: users
-          image: rawanad/handiwork-users
+        - name: services
+          image: rawanad/handiwork-services
+          ports:
+            - containerPort: 80
           resources: {}
 
           readinessProbe:
@@ -45,13 +47,13 @@ spec:
           # Environment variables
           env:
             # custom name (can be anything)
-            - name: USERS_CONNECTION_STRING
+            - name: SERVICES_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
                   # group name
-                  name: users-db-connection-secret
+                  name: services-db-connection-secret
                   # key name
-                  key: users-db-connection
+                  key: services-db-connection
             - name: JWT
               valueFrom:
                 secretKeyRef:
@@ -62,18 +64,36 @@ spec:
                 secretKeyRef:
                   name: rabbitmq-secret
                   key: rabbitmq
+            # Cloudinary
+            - name: CLOUDINARY_CLOUD_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinary-secret
+                  key: cloud-name
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinary-secret
+                  key: api-key
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinary-secret
+                  key: api-secret
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: users-clusterip-srv
+  name: services-clusterip-srv
 spec:
   type: ClusterIP
   selector:
-    app: users
+    app: services
   ports:
-    - name: users
+    - name: services
       protocol: TCP
       # Cluster IP port
+      # port used by other objects
       port: 80
       targetPort: 80
