@@ -6,16 +6,19 @@ on:
       - master
     # build and push the images only if one of the microservices changed
     paths:
-      - "Auth"
-      - "Client"
-      - "Services"
-      - "Users"
+      - "Auth/**"
+      - "Client/**"
+      - "Services/**"
+      - "Users/**"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 env:
   DH_USERNAME: ${{ secrets.DH_USERNAME }}
   DH_PASSWORD: ${{ secrets.DH_PASSWORD }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GITHUB_SHA: ${{ env.GITHUB_SHA }}
+  GITHUB_SHA: ${{ github.sha }}
 
 jobs:
   build:

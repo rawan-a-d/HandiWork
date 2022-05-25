@@ -1,9 +1,11 @@
-name: Validate Kubernetes Configurations & Docker Build
+name: Docker Build a PR
 
 on:
-  push:
-    branches:
-      - "!master"
+  #push:
+  #  branches:
+  #    # all branches except master
+  #    - "*"
+  #    - "!master"
   pull_request:
     branches:
       - "**"

@@ -1,0 +1,33 @@
+name: Load Testing
+
+on:
+  push:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+env:
+  K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+
+jobs:
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: k6 Load Test
+        uses: grafana/k6-action@v0.2.0
+        with:
+          # To run in the k6 cloud, provide your k6 cloud token as a secret to the input `token`. Dont have a k6 account yet? Go to https://k6.io/cloud and activate your free trial.
+          cloud: true
+          # k6 Cloud Token. Only required for using the cloud service.
+          token: ${{ secrets.K6_CLOUD_TOKEN }}
+          # Path to the test script to execute, relative to the workspace.
+          filename: test.js
+          # Additional argument and flags to provide to the k6 CLI. See https://k6.io/docs/using-k6/options for details.
+          #flags: # optional, default is 

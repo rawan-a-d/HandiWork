@@ -1,60 +1,55 @@
-# Deployment of a container into a pod
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: services-depl
+  name: client-depl
 spec:
   replicas: 2
-  # select the template
   selector:
     matchLabels:
-      app: services
-  # define the pod and the container we want to use
+      component: web
   template:
     metadata:
       labels:
-        app: services
+        component: web
     spec:
       containers:
-        - name: services
-          image: rawanad/handiwork-services:ffa15928a4e7048a1e46999eb55bcab11b509295
+        - name: client
+          image: rawanad/handiwork-client:cf656ac2e6ed398c65eb4d750ef84e5980c5048b
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 80
+            - containerPort: 80 # the port that the container is running on in the cluster
           resources: {}
 
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /
               port: 80
             initialDelaySeconds: 15
             timeoutSeconds: 10
 
           livenessProbe:
             httpGet:
-              path: /healthz
+              path: /
               port: 80
             initialDelaySeconds: 15
             timeoutSeconds: 10
 
           startupProbe:
             httpGet:
-              path: /healthz
+              path: /
               port: 80
             initialDelaySeconds: 30
             timeoutSeconds: 10
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: services-clusterip-srv
+  name: client-clusterip-srv
 spec:
   type: ClusterIP
   selector:
-    app: services
+    component: web
   ports:
-    - name: services
-      protocol: TCP
-      # Cluster IP port
-      # port used by other objects
-      port: 80
-      targetPort: 80
+    - port: 80 # port that the service is running on in the cluster
+      targetPort: 80 # port exposed by the service
