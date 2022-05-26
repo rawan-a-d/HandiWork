@@ -45,7 +45,7 @@ spec:
           # Environment variables
           env:
             # custom name (can be anything)
-            - name: CONNECTION_STRING
+            - name: AUTH_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
                   # group name
