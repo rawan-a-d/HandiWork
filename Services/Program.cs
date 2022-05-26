@@ -27,7 +27,7 @@ if (builder.Environment.IsProduction())
 {
 	jwtConfig = Environment.GetEnvironmentVariable("JWT");
 	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
-	connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING_SERVICES");
+	connectionString = Environment.GetEnvironmentVariable("SERVICES_CONNECTION_STRING");
 	cloudinarySettings = new CloudinarySettings
 	{
 		CloudName = Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME"),
