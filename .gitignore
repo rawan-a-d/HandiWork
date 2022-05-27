@@ -468,11 +468,11 @@ README.md
 /MessagingModels/MessagingModels.nuspec
 
 # Migrations
-/Auth/Migrations
-/Users/Migrations
+/**/Migrations
 
 # K8S
 /K8S/DB
 
 # Config
 Secrets
+/docker.sh

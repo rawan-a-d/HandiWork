@@ -28,6 +28,7 @@ namespace Users.Consumers
 
 			// Add user to db
 			await _context.Users.AddAsync(userModel);
+			_context.SaveChanges();
 
 			_logger.LogInformation($"Got new message {context.Message.Name}");
 		}

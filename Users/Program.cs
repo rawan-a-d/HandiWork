@@ -144,6 +144,6 @@ app.MapHealthChecks("/healthz");
 app.MapControllers();
 
 // Prep data
-PrepDb.PrepPopulation(app, app.Environment.IsDevelopment());
+PrepDb.PrepPopulation(app);
 
 app.Run();

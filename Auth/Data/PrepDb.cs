@@ -6,7 +6,7 @@ namespace Auth.Data
 {
 	public static class PrepDb
 	{
-		public async static void PrepPopulation(IApplicationBuilder app, bool isDevelopment)
+		public async static void PrepPopulation(IApplicationBuilder app)
 		{
 			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{
