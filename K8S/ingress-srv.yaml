@@ -10,6 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     # allow nginx to update routes (e.g. /api --> /)
     #nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
     #- host: handiwork.com

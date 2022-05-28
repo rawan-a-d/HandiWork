@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: rawanad/handiwork-client:a703b922d4cb98aedd776eb5c2ff995251d5d2cc
+          image: rawanad/handiwork-client
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80 # the port that the container is running on in the cluster
@@ -47,6 +47,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: client-clusterip-srv
+  namespace: handiwork
 spec:
   type: ClusterIP
   selector:
