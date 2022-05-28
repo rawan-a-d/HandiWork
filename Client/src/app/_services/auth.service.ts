@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AuthResponse } from '../_models/AuthResponse';
 import { UserAuth } from '../_models/UserAuth';
 
 @Injectable({
@@ -16,11 +17,11 @@ export class AuthService {
 	}
 
 	register(userAuth: UserAuth) {
-		return this.http.post(this.url + '/register', JSON.stringify(userAuth), { responseType: 'text' })
+		return this.http.post(this.url + '/register', JSON.stringify(userAuth), { responseType: 'json' })
 			.pipe(
-				map(response => {
+				map((response: AuthResponse) => {
 					if (response) {
-						localStorage.setItem('token', response);
+						localStorage.setItem('token', response.token);
 
 						return true;
 					}
@@ -31,11 +32,11 @@ export class AuthService {
 	}
 
 	login(credentials: any) {
-		return this.http.post(this.url + '/login', JSON.stringify(credentials), { responseType: 'text' })
+		return this.http.post(this.url + '/login', JSON.stringify(credentials), { responseType: 'json' })
 			.pipe(
-				map(response => {
+				map((response: AuthResponse) => {
 					if (response) {
-						localStorage.setItem('token', response);
+						localStorage.setItem('token', response.token);
 
 						return true;
 					}
