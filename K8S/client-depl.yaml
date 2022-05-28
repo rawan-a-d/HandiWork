@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: rawanad/handiwork-client
+          image: rawanad/handiwork-client:e3eb8db3e5c4769ed26f47ec7c7c91a70b257480
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80 # the port that the container is running on in the cluster
