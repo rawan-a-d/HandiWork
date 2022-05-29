@@ -15,7 +15,10 @@ RUN npm install
 COPY . .
 
 # will result in a build folder inside the app directory
-RUN npm run build
+# DEVELOPMENT
+#RUN npm run build
+# PRODUCTION
+RUN npm run prod
 
 # 2. Run phase
 # https://hub.docker.com/_/nginx

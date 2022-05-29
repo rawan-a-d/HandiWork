@@ -4,14 +4,10 @@
 
 export const environment = {
 	production: false,
-	//apiUrlUsers: 'http://localhost:5000/api/users',
-	//apiUrlServices: 'http://localhost:8000/api/users',
-	//apiUrlServiceCategories: 'http://localhost:8000/api/servicecategories',
-	//apiUrlAuth: 'http://localhost:7000/api/auth',
-	apiUrlUsers: 'http://20.79.236.59/api/users',
-	apiUrlServices: 'http://20.79.236.59/api/users',
-	apiUrlServiceCategories: 'http://20.79.236.59/api/serviceCategories',
-	apiUrlAuth: 'http://20.79.236.59/api/auth'
+	apiUrlUsers: 'http://localhost:5000/api/users',
+	apiUrlServices: 'http://localhost:8000/api/users',
+	apiUrlServiceCategories: 'http://localhost:8000/api/servicecategories',
+	apiUrlAuth: 'http://localhost:7000/api/auth',
 };
 
 /*

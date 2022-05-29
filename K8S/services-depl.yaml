@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: services
-          image: rawanad/handiwork-services:918dec994676ea46e85489f8d5c9ce66530f80b3
+          image: rawanad/handiwork-services
           ports:
             - containerPort: 80
           resources: {}
