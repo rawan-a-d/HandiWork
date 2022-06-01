@@ -1,0 +1,24 @@
+name: OWASP Security Scan
+
+on:
+  workflow_dispatch
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: Scan the webapplication
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: ZAP Scan
+        uses: zaproxy/action-api-scan@v0.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: 'owasp/zap2docker-stable'
+          format: openapi
+          target: 'http://20.79.236.59/'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
