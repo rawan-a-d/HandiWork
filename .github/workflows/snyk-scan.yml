@@ -3,7 +3,10 @@ name: Snyk Docker Image Scan
 on: 
   - push
   - workflow_dispatch
-  
+
+env:
+  DH_USERNAME: ${{ secrets.DH_USERNAME }}
+
 jobs:
   security:
     runs-on: ubuntu-latest
@@ -13,4 +16,4 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        image: Users/Dockerfile
+        image: ${{ env.DH_USERNAME }}/handiwork-users:latest
