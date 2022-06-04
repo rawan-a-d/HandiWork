@@ -1,25 +1,4 @@
-# name: Snyk Docker Image Scan
-
-# on: 
-#   - push
-#   - workflow_dispatch
-
-# env:
-#   DH_USERNAME: ${{ secrets.DH_USERNAME }}
-
-# jobs:
-#   security:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: Run Snyk to check Docker image for vulnerabilities
-#       uses: snyk/actions/docker@master
-#       env:
-#         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-#       with:
-#         image: ${{ env.DH_USERNAME }}/handiwork-users:latest
-#         args: --severity-threshold=high
-        
-
+# https://github.com/snyk/actions/tree/master/docker
 name: Snyk Docker Image Scan
 on:
   - push
@@ -27,6 +6,7 @@ on:
 
 env:
   DH_USERNAME: ${{ secrets.DH_USERNAME }}
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
 jobs:
   snyk:
@@ -45,7 +25,7 @@ jobs:
         # In order to use the Snyk Action you will need to have a Snyk API token.
         # More details in https://github.com/snyk/actions#getting-your-snyk-token
         # or you can signup for free at https://snyk.io/login
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
       with:
         image: ${{ env.DH_USERNAME }}/handiwork-users:latest
 #         args: --file=Dockerfile
