@@ -20,10 +20,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build Docker images
       run: |
-        docker build -t ${{ env.DH_USERNAME }}/handiwork-users-snyk::${{ github.sha }} -f Users/Dockerfile ./Users
+        docker build -t ${{ env.DH_USERNAME }}/handiwork-users-snyk:${{ github.sha }} -f Users/Dockerfile ./Users
         docker build -t ${{ env.DH_USERNAME }}/handiwork-services-snyk:${{ github.sha }} -f Services/Dockerfile ./Services
-        docker build -t ${{ env.DH_USERNAME }}/handiwork-auth-snyk::${{ github.sha }} -f Auth/Dockerfile ./Auth
-        docker build -t ${{ env.DH_USERNAME }}/handiwork-client-snyk::${{ github.sha }} -f Client/Dockerfile ./Client
+        docker build -t ${{ env.DH_USERNAME }}/handiwork-auth-snyk:${{ github.sha }} -f Auth/Dockerfile ./Auth
+        docker build -t ${{ env.DH_USERNAME }}/handiwork-client-snyk:${{ github.sha }} -f Client/Dockerfile ./Client
 
     - name: Run Snyk to check Users Docker image for vulnerabilities
       # Snyk can be used to break the build when it detects vulnerabilities.
@@ -36,7 +36,7 @@ jobs:
         # or you can signup for free at https://snyk.io/login
         SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
       with:
-        image: ${{ env.DH_USERNAME }}/handiwork-users-snyk::${{ github.sha }}
+        image: ${{ env.DH_USERNAME }}/handiwork-users-snyk:${{ github.sha }}
 #         args: --file=Dockerfile
 
 #     - name: Upload result to GitHub Code Scanning
