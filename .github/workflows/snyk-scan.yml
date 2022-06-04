@@ -1,8 +1,12 @@
 # https://github.com/snyk/actions/tree/master/docker
-name: Snyk Docker Image Scan
+name: Snyk Security Scan
+
 on:
-  - push
-  - workflow_dispatch
+  push:
+    branches:
+      - master
+      - main  
+  pull_request:
 
 env:
   DH_USERNAME: ${{ secrets.DH_USERNAME }}
@@ -10,6 +14,7 @@ env:
 
 jobs:
   snyk:
+    name: Run security checks via snyk
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
