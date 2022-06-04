@@ -18,8 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build a Docker image
-      run: docker build -t ${{ env.DH_USERNAME }}/handiwork-users:latest -f Users/Dockerfile ./Users
+    - name: Build Docker images
+      run: |
+        docker build -t ${{ env.DH_USERNAME }}/handiwork-users:latest -f Users/Dockerfile ./Users
+        docker build -t ${{ env.DH_USERNAME }}/handiwork-services:latest -f Services/Dockerfile ./Services
+        docker build -t ${{ env.DH_USERNAME }}/handiwork-auth:latest -f Auth/Dockerfile ./Auth
+        docker build -t ${{ env.DH_USERNAME }}/handiwork-client:latest -f Client/Dockerfile ./Client
 
     - name: Run Snyk to check Users Docker image for vulnerabilities
       # Snyk can be used to break the build when it detects vulnerabilities.
