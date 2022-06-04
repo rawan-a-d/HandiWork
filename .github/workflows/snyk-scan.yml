@@ -16,7 +16,7 @@ jobs:
     - name: Build a Docker image
       run: docker build -t ${{ env.DH_USERNAME }}/handiwork-users:latest -f Users/Dockerfile ./Users
 
-    - name: Run Snyk to check Docker image for vulnerabilities
+    - name: Run Snyk to check Users Docker image for vulnerabilities
       # Snyk can be used to break the build when it detects vulnerabilities.
       # In this case we want to upload the issues to GitHub Code Scanning
       continue-on-error: true
@@ -34,3 +34,42 @@ jobs:
 #       uses: github/codeql-action/upload-sarif@v1
 #       with:
 #         sarif_file: snyk.sarif
+
+    - name: Run Snyk to check Services Docker image for vulnerabilities
+      # Snyk can be used to break the build when it detects vulnerabilities.
+      # In this case we want to upload the issues to GitHub Code Scanning
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        # In order to use the Snyk Action you will need to have a Snyk API token.
+        # More details in https://github.com/snyk/actions#getting-your-snyk-token
+        # or you can signup for free at https://snyk.io/login
+        SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
+      with:
+        image: ${{ env.DH_USERNAME }}/handiwork-services:latest
+  
+    - name: Run Snyk to check Auth Docker image for vulnerabilities
+      # Snyk can be used to break the build when it detects vulnerabilities.
+      # In this case we want to upload the issues to GitHub Code Scanning
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        # In order to use the Snyk Action you will need to have a Snyk API token.
+        # More details in https://github.com/snyk/actions#getting-your-snyk-token
+        # or you can signup for free at https://snyk.io/login
+        SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
+      with:
+        image: ${{ env.DH_USERNAME }}/handiwork-auth:latest
+
+    - name: Run Snyk to check Client Docker image for vulnerabilities
+      # Snyk can be used to break the build when it detects vulnerabilities.
+      # In this case we want to upload the issues to GitHub Code Scanning
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        # In order to use the Snyk Action you will need to have a Snyk API token.
+        # More details in https://github.com/snyk/actions#getting-your-snyk-token
+        # or you can signup for free at https://snyk.io/login
+        SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
+      with:
+        image: ${{ env.DH_USERNAME }}/handiwork-client:latest
