@@ -15,6 +15,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -47,7 +48,8 @@ const matModules = [
 	MatDialogModule,
 	MatToolbarModule,
 	MatCardModule,
-	MatPasswordStrengthModule
+	MatPasswordStrengthModule,
+	MatSelectModule
 ];
 
 @NgModule({
