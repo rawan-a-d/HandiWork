@@ -17,7 +17,8 @@ export class ModeratorAuthGuard implements CanActivate {
 		state: RouterStateSnapshot): boolean {
 		// Check if user is moderator
 		let user = this.authService.currentUser;
-		let isModerator = user.moderator;
+
+		let isModerator = user.role.indexOf("Moderator") >= 0;
 
 		if (user && isModerator) {
 			return true;
