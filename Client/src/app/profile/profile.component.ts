@@ -25,7 +25,9 @@ export class ProfileComponent implements OnInit {
 	ngOnInit(): void {
 		// get id from url
 		this.route.paramMap.subscribe(params => {
-			var userId = + params.get("id")
+			var userId = + params.get("id");
+
+			console.log(userId);
 
 			this.getUser(userId);
 
@@ -37,6 +39,8 @@ export class ProfileComponent implements OnInit {
 		this.usersService.get(id)
 			.subscribe(result => {
 				this.profile = <Profile>result;
+
+				console.log(this.profile)
 			});
 	}
 

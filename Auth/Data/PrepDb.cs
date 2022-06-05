@@ -41,10 +41,39 @@ namespace Auth.Data
 			var admin = new User
 			{
 				Email = "admin@admin.com",
-				UserName = "admin"
+				UserName = "admin",
+				Name = "Admin"
 			};
 			await userManager.CreateAsync(admin, "Pa$$w0rd");
 			await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
+
+			// Create other users
+			var user1 = new User()
+			{
+				Email = "rawan@gmail.com",
+				UserName = "Rawan",
+				Name = "Rawan"
+			};
+			await userManager.CreateAsync(user1, "Pa$$w0rd");
+			await userManager.AddToRolesAsync(user1, new[] { "User" });
+
+			var user2 = new User()
+			{
+				Email = "omar@gmail.com",
+				UserName = "Omar",
+				Name = "Omar"
+			};
+			await userManager.CreateAsync(user2, "Pa$$w0rd");
+			await userManager.AddToRolesAsync(user2, new[] { "User" });
+
+			var user3 = new User()
+			{
+				Email = "ranim@gmail.com",
+				UserName = "Ranim",
+				Name = "Ranim"
+			};
+			await userManager.CreateAsync(user3, "Pa$$w0rd");
+			await userManager.AddToRolesAsync(user3, new[] { "User" });
 		}
 	}
 }
