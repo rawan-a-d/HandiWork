@@ -7,6 +7,8 @@ import { ManageSkillsComponent } from "./profile/manage-skills/manage-skills.com
 import { PhotoEditorComponent } from "./profile/photo-editor/photo-editor.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { RegisterComponent } from "./register/register.component";
+import { AuthGuard } from "./_guards/auth.guard";
+import { ModeratorAuthGuard } from "./_guards/moderator-auth.guard";
 
 const appRoutes: Routes = [
 	{
@@ -26,22 +28,26 @@ const appRoutes: Routes = [
 		children: [
 			{
 				path: '',
-				component: ProfileComponent
+				component: ProfileComponent,
+				canActivate: [AuthGuard]
 			},
 			{
 				path: 'manage-skills',
-				component: ManageSkillsComponent
+				component: ManageSkillsComponent,
+				canActivate: [AuthGuard]
 			},
 			{
 				path: 'manage-skills/:skillId',
-				component: PhotoEditorComponent
+				component: PhotoEditorComponent,
+				canActivate: [AuthGuard]
 			}
 		]
 
 	},
 	{
 		path: 'moderator',
-		component: ModeratorComponent
+		component: ModeratorComponent,
+		canActivate: [AuthGuard, ModeratorAuthGuard]
 	}
 ]
 
