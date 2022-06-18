@@ -21,9 +21,10 @@ namespace Users.Data
 				Console.WriteLine("--> Seeding data...");
 
 				context.Users.AddRange(
-					new User() { Name = "Rawan", Email = "rawan@gmail.com", Phone = "087667283", Address = "4783 GW 138" },
+					new User() { Name = "admin", Email = "admin@admin.com", Phone = "087667283", Address = "4543 YH 2" },
+					new User() { Name = "Rawan", Email = "rawan@gmail.com", Phone = "087667283", Address = "3496 WJ 100" },
 					new User() { Name = "Omar", Email = "omar@gmail.com", Phone = "087667283", Address = "4783 GW 138" },
-					new User() { Name = "Ranim", Email = "ranim@gmail.com", Phone = "087667283", Address = "4783 GW 138" }
+					new User() { Name = "Ranim", Email = "ranim@gmail.com", Phone = "087667283", Address = "2395 WQ 45" }
 				);
 
 				context.SaveChanges();
