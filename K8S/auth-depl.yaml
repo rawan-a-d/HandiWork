@@ -5,7 +5,7 @@ metadata:
   name: auth-depl
   namespace: handiwork
 spec:
-  replicas: 2
+  replicas: 1
   # select the template
   selector:
     matchLabels:

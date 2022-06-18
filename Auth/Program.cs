@@ -18,8 +18,8 @@ if (builder.Environment.IsProduction())
 {
 	jwtConfig = Environment.GetEnvironmentVariable("JWT");
 	rabbitMQ = Environment.GetEnvironmentVariable("RABBIT_MQ");
-	//connectionString = Environment.GetEnvironmentVariable("AUTH_CONNECTION_STRING");
-	connectionString = builder.Configuration.GetConnectionString("IdentityDB");
+	connectionString = Environment.GetEnvironmentVariable("AUTH_CONNECTION_STRING");
+	//connectionString = builder.Configuration.GetConnectionString("IdentityDB");
 
 	// DB
 	Console.WriteLine("--> Using SqlServer Db");
