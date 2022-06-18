@@ -24,6 +24,7 @@ namespace Auth.Controllers
 		private readonly IConfiguration _configuration;
 		private readonly IMapper _mapper;
 		private readonly IPublishEndpoint _publishEndPoint;
+		private readonly IWebHostEnvironment _hostingEnvironment;
 
 		public AuthController(
 				UserManager<User> userManager,
@@ -31,7 +32,8 @@ namespace Auth.Controllers
 				ILogger<AuthController> logger,
 				IConfiguration configuration,
 				IMapper mapper,
-				IPublishEndpoint publishEndPoint)
+				IPublishEndpoint publishEndPoint,
+				IWebHostEnvironment hostingEnvironment)
 		{
 			_userManager = userManager;
 			_roleManager = roleManager;
@@ -39,6 +41,7 @@ namespace Auth.Controllers
 			_configuration = configuration;
 			_mapper = mapper;
 			_publishEndPoint = publishEndPoint;
+			_hostingEnvironment = hostingEnvironment;
 		}
 
 		/// <summary>
@@ -261,9 +264,16 @@ namespace Auth.Controllers
 		{
 			var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-			// get security key
-			//var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtConfig")["Secret"]);
-			var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT"));
+			var key = new byte[] { };
+			// get security key based on environment
+			if (_hostingEnvironment.IsProduction())
+			{
+				key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT"));
+			}
+			else
+			{
+				key = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtConfig")["Secret"]);
+			}
 
 			var claims = await GetAllValidClaims(user);
 

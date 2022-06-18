@@ -13,7 +13,7 @@ export class ServicesService {
 
 	constructor(@Inject(HttpClient) http: HttpClient) {
 		this.http = http;
-		this.url = environment.apiUrlServices
+		this.url = environment.apiUrlServices;
 	}
 
 	getInfo(): Observable<string> {
@@ -47,7 +47,7 @@ export class ServicesService {
 	}
 
 	create(userId: number, resource: any) {
-		return this.http.post(this.url + '/' + userId + environment.apiUrlServices, JSON.stringify(resource))
+		return this.http.post(this.url + '/' + userId + '/services', JSON.stringify(resource))
 			.pipe(
 				map(
 					response => response
@@ -58,7 +58,7 @@ export class ServicesService {
 	update(userId: number, resource: any) {
 		this.setInfo('Object updated');
 
-		return this.http.put(this.url + '/' + userId + environment.apiUrlServices + '/' + resource.id, JSON.stringify(resource))
+		return this.http.put(this.url + '/' + userId + '/services/' + resource.id, JSON.stringify(resource))
 			.pipe(
 				map(
 					response => response
@@ -70,7 +70,7 @@ export class ServicesService {
 	delete(userId: number, serviceId: number) {
 		this.setInfo('Object deleted');
 
-		return this.http.delete(this.url + '/' + userId + environment.apiUrlServices + '/' + serviceId)
+		return this.http.delete(this.url + '/' + userId + '/services/' + serviceId)
 			.pipe(
 				map(
 					response => response

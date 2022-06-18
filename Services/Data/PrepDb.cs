@@ -21,7 +21,7 @@ namespace Users.Data
 				Console.WriteLine("--> Seeding data...");
 
 				context.Users.AddRange(
-					new User() { Name = "Rawan", ExternalId = 1 },
+					new User() { Name = "Admin", ExternalId = 1 },
 					new User() { Name = "Rawan", ExternalId = 2 },
 					new User() { Name = "Omar", ExternalId = 3 },
 					new User() { Name = "Ranim", ExternalId = 4 }
@@ -40,10 +40,6 @@ namespace Users.Data
 				);
 
 				context.SaveChanges();
-
-				//Console.WriteLine($"--> User: {context.Users.FirstOrDefault().Id}");
-				//Console.WriteLine($"--> Service category: {context.ServicesCategories.FirstOrDefault().Name}");
-				//Console.WriteLine($"--> Service: {context.Services.FirstOrDefault().ServiceCategory.Name}");
 			}
 			else
 			{

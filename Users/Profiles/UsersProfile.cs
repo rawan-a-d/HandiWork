@@ -14,6 +14,7 @@ namespace Users.Profiles
 			CreateMap<User, UserReadDto>();
 			CreateMap<UserUpdateDto, User>();
 
+			// Message bus
 			CreateMap<UserCreated, User>()
 				.ForMember(dest => dest.ExternalId, opt =>
 					opt.MapFrom(src => src.Id)

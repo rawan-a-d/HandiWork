@@ -33,7 +33,7 @@
 			<button mat-raised-button color="primary"
 				[routerLink]="['/user', authService.currentUser.Id, 'manage-skills']">Manage work</button>
 		</div>
-		<div class="container__row container__skills" *ngFor="let service in services">
+		<div class="container__row container__skills" *ngFor="let service of services">
 			<mat-chip-list aria-label="Skill selection">
 				<!--<mat-chip color="accent" selected>Painting</mat-chip>-->
 				<!--<mat-chip>Installing laminate</mat-chip>-->

@@ -478,4 +478,5 @@ Secrets
 /docker.sh
 /LoadTesting
 
+# Snyk
 .dccache
