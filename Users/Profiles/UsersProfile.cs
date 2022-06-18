@@ -13,7 +13,11 @@ namespace Users.Profiles
 			// Source -> Target
 			CreateMap<User, UserReadDto>();
 			CreateMap<UserUpdateDto, User>();
-			CreateMap<UserCreated, User>();
+
+			CreateMap<UserCreated, User>()
+				.ForMember(dest => dest.ExternalId, opt =>
+					opt.MapFrom(src => src.Id)
+				);
 		}
 	}
 }
