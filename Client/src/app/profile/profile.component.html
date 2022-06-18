@@ -33,21 +33,29 @@
 			<button mat-raised-button color="primary"
 				[routerLink]="['/user', authService.currentUser.Id, 'manage-skills']">Manage work</button>
 		</div>
-		<div class="container__row container__skills" *ngFor="let service of services">
-			<mat-chip-list aria-label="Skill selection">
+		<div class="container__row container__skills" *ngIf="chips">
+			<mat-chip-list aria-label="Skill selection" selectable="true">
 				<!--<mat-chip color="accent" selected>Painting</mat-chip>-->
 				<!--<mat-chip>Installing laminate</mat-chip>-->
-				<mat-chip>{{service.serviceCategory.name}}</mat-chip>
+				<!-- (selectionChange)="selectService($event)" -->
+				<mat-chip *ngFor="let chip of chips; let i = index" [selected]="chip.selected"
+					(click)="selectChip(chip)">
+					{{chip.name}}
+				</mat-chip>
 			</mat-chip-list>
 		</div>
-		<div class="container__row container__skills">
-			<app-image-slider [images]="[
-				'https://www.paintzen.com/wp-content/uploads/2019/12/interior-paint-contractors-painting-paintzen.jpg',
-				'https://media.istockphoto.com/photos/man-in-a-working-overall-picture-id1015387276?k=20&m=1015387276&s=612x612&w=0&h=Vf9r2_8HePzA-qPdeKGc4lqQvOHqQq6eIaE8iDdUaxU=',
-				'https://mydecorative.com/wp-content/uploads/2019/06/interior-house-painting.jpg']">
+		<div class="container__row container__skills container__photos">
+			<app-image-slider [images]="photos" *ngIf="photos.length > 0; else noPhotos">
 			</app-image-slider>
+
+			<ng-template #noPhotos>
+				<h2 class="container__no-photos">
+					No photos available
+				</h2>
+			</ng-template>
+
 		</div>
-		<div class="container__row container__skills container__see-portfolio">
+		<div class="container__row container__skills container__see-portfolio" *ngIf="photos.length > 0">
 			<button class="container__see-portfolio-button" mat-raised-button color="accent">See entire
 				portfolio</button>
 		</div>

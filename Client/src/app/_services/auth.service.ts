@@ -79,6 +79,6 @@ export class AuthService {
 	}
 
 	get userId() {
-		return this.currentUser.sub;
+		return this.currentUser.Id;
 	}
 }

@@ -7,7 +7,8 @@
 .container__item {
 	display: grid;
 	/*border: solid 1px black;*/
-	padding: 4%;
+	padding: 3% 10%;
+	grid-template-rows: min-content;
 }
 
 /* Show two items on one row */
@@ -20,14 +21,18 @@
 	margin-top: 2%;
 }
 
+.container__no-photos {
+	text-align: center;
+}
+
 .container__profile-image {
 	width: 80%;
 }
 
 /* See portfolio button container */
 .container__see-portfolio {
-	margin-left: 15%;
-	margin-right: 15%;
+	margin-left: 30%;
+	margin-right: 30%;
 }
 
 /* See portfolio button */

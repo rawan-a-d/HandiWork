@@ -1,7 +1,6 @@
 using AutoMapper;
 using MassTransit;
 using MessagingModels;
-//using MessagingModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -105,43 +104,44 @@ namespace Users.Controllers
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Moderator, User")]
 		public async Task<ActionResult> DeleteUser(int id)
 		{
-			// check if user is not owner and not admin or moderator
 			var userId = this.User.GetId();
 
-			if (userId != id.ToString() && (!this.User.GetRoles().Contains("Admin") || !this.User.GetRoles().Contains("Moderator")))
+			// check if user is owner or admin or moderator
+			if (userId == id.ToString() || this.User.GetRoles().Contains("Admin") || this.User.GetRoles().Contains("Moderator"))
 			{
-				return Unauthorized();
-			}
 
-			var user = _repository.GetUser(id);
+				var user = _repository.GetUser(id);
 
-			if (user == null)
-			{
-				return NotFound("User was not found");
-			}
-
-			_repository.DeleteUser(user);
-
-			// save to db
-			if (_repository.SaveChanges())
-			{
-				try
+				if (user == null)
 				{
-					// Publish UserDeleted event
-					await _publishEndPoint.Publish<UserDeleted>(new
+					return NotFound("User was not found");
+				}
+
+				_repository.DeleteUser(user);
+
+				// save to db
+				if (_repository.SaveChanges())
+				{
+					try
 					{
-						Id = userId,
-					});
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
+						// Publish UserDeleted event
+						await _publishEndPoint.Publish<UserDeleted>(new
+						{
+							Id = userId,
+						});
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
+					}
+
+					return Ok();
 				}
 
-				return Ok();
+				return BadRequest("User cannot be removed");
 			}
 
-			return BadRequest("User cannot be removed");
+			return Unauthorized();
 		}
 	}
 }

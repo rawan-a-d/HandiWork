@@ -16,7 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 export class PhotoEditorComponent implements OnInit {
 	service: Service;
 	url: string;
-	currentUser: User;
+	currentUserId: number;
 	token: string;
 
 	// photo uploader
@@ -31,19 +31,16 @@ export class PhotoEditorComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.currentUser = this.authService.currentUser;
-
-		// TODO: remove this line
-		this.currentUser.id = 1;
+		this.currentUserId = this.authService.userId;
 
 		// get service id from url
 		this.route.paramMap.subscribe(params => {
 			var serviceId = + params.get("skillId");
 
 			// get service
-			this.getService(this.currentUser.id, serviceId);
+			this.getService(this.currentUserId, serviceId);
 
-			this.url = environment.apiUrlServices + '/' + this.currentUser.id + '/services/' + serviceId + '/photos';
+			this.url = environment.apiUrlServices + '/' + this.currentUserId + '/services/' + serviceId + '/photos';
 		})
 
 		// get user token
@@ -92,7 +89,7 @@ export class PhotoEditorComponent implements OnInit {
 
 	// Delete photo
 	deletePhoto(photo: Photo) {
-		this.servicesSerive.deletePhoto(this.currentUser.id, this.service.id, photo.id)
+		this.servicesSerive.deletePhoto(this.currentUserId, this.service.id, photo.id)
 			.subscribe(() =>
 				this.service.photos = this.service.photos.filter(
 					(x) => x.id !== photo.id
