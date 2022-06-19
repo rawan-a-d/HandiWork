@@ -1,11 +1,13 @@
 <form class="search" #f="ngForm" (ngSubmit)="search(f.value)">
-	<mat-form-field class="search__field">
-		<mat-label>Search</mat-label>
-		<input type="text" ngModel matInput name="searchText">
-		<mat-icon id="search" matSuffix>search</mat-icon>
-	</mat-form-field>
+	<div class="search__form-container">
+		<mat-form-field class="search__field">
+			<mat-label>Search</mat-label>
+			<input type="text" ngModel matInput name="searchText">
+			<mat-icon id="search" matSuffix>search</mat-icon>
+		</mat-form-field>
+		<button class="search__button" mat-flat-button color="accent">Search</button>
+	</div>
 
-	<button class="search__button" mat-flat-button color="accent">Search</button>
 </form>
 
 <!--<app-possible-services></app-possible-services>-->
