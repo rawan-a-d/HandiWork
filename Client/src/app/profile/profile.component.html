@@ -35,11 +35,8 @@
 		</div>
 		<div class="container__row container__skills" *ngIf="chips">
 			<mat-chip-list aria-label="Skill selection" selectable="true">
-				<!--<mat-chip color="accent" selected>Painting</mat-chip>-->
-				<!--<mat-chip>Installing laminate</mat-chip>-->
-				<!-- (selectionChange)="selectService($event)" -->
 				<mat-chip *ngFor="let chip of chips; let i = index" [selected]="chip.selected"
-					(click)="selectChip(chip)">
+					(click)="selectChip(chip)" color="accent">
 					{{chip.name}}
 				</mat-chip>
 			</mat-chip-list>

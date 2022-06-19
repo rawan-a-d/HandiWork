@@ -112,7 +112,7 @@ namespace Services.Controllers
 		/// <returns></returns>
 		[HttpGet("{serviceId}", Name = "GetService")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		public ActionResult<IEnumerable<ServiceReadDto>> GetService(int userId, int serviceId)
+		public ActionResult<ServiceReadDto> GetService(int userId, int serviceId)
 		{
 			// get service
 			var service = _serviceRepository.GetService(serviceId, userId);
@@ -333,6 +333,14 @@ namespace Services.Controllers
 			}
 
 			return BadRequest("Failed to delete photo");
+		}
+
+		[HttpGet("search")]
+		public ActionResult<IEnumerable<User>> SearchBy(string keyword)
+		{
+			var users = _mapper.Map<IEnumerable<UserReadDto>>(_serviceRepository.SearchService(keyword));
+
+			return Ok(users);
 		}
 	}
 }

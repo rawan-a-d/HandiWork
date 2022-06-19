@@ -15,5 +15,7 @@ namespace Services.Data
 		void UpdateService(Service service);
 
 		void DeleteService(Service service);
+
+		IEnumerable<User> SearchService(string serviceCategoryName);
 	}
 }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Services.Models;
+using System.Linq;
 
 namespace Services.Data
 {
@@ -76,6 +77,22 @@ namespace Services.Data
 		public void DeleteService(Service service)
 		{
 			_context.Services.Remove(service);
+		}
+
+
+		// search for a category (laminaat) and find users who have services
+		public IEnumerable<User> SearchService(string serviceCategoryName)
+		{
+			ServiceCategory category = _context.ServiceCategories.Where(s => s.Name == serviceCategoryName).FirstOrDefault();
+
+			//context.Customers
+			//    .Include(c => c.Orders.Where(o => o.Name != "Foo")).ThenInclude(o => o.OrderDetails)
+			//    .Include(c => c.Orders).ThenInclude(o => o.Customer)
+			return _context.Users
+				//.Include(s => s.Services)
+				.Where(u => u.Services.Any(s => s.ServiceCategory.Name.ToLower().Contains(serviceCategoryName.ToLower())))
+				.Distinct()
+				.ToList();
 		}
 
 		/// <summary>

@@ -81,4 +81,8 @@ export class ServicesService {
 	deletePhoto(userId: number, serviceId: number, photoId: number) {
 		return this.http.delete(this.url + '/' + userId + '/services/' + serviceId + '/photos/' + photoId);
 	}
+
+	search(userId: number, keyword: string) {
+		return this.http.get(this.url + '/' + userId + '/services/' + 'search?keyword=' + keyword);
+	}
 }
