@@ -5,7 +5,7 @@ metadata:
   name: services-depl
   namespace: handiwork
 spec:
-  replicas: 1
+  replicas: 2
   # select the template
   selector:
     matchLabels:

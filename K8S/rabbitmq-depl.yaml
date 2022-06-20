@@ -4,7 +4,7 @@ metadata:
   name: rabbitmq-depl
   namespace: handiwork
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: rabbitmq
