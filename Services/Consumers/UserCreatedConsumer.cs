@@ -25,6 +25,7 @@ namespace Services.Consumers
 			_logger.LogInformation($"Got new message {context.Message.Name}");
 
 			UserCreated userCreated = context.Message;
+
 			var userModel = _mapper.Map<User>(userCreated);
 
 			_userRepository.CreateUser(userModel);

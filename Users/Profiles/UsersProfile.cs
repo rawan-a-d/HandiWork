@@ -18,6 +18,9 @@ namespace Users.Profiles
 			CreateMap<UserCreated, User>()
 				.ForMember(dest => dest.ExternalId, opt =>
 					opt.MapFrom(src => src.Id)
+				)
+				.ForMember(dest => dest.Id, opt =>
+					opt.Ignore()
 				);
 		}
 	}

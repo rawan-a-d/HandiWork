@@ -25,14 +25,24 @@ namespace Services.Profiles
 			CreateMap<UserCreated, User>()
 				.ForMember(dest => dest.ExternalId, opt =>
 					opt.MapFrom(src => src.Id)
+				)
+				.ForMember(dest => dest.Id, opt =>
+					opt.Ignore()
 				);
+			//.ForMember(dest => dest.Id, );
 			CreateMap<UserUpdated, User>()
 				.ForMember(dest => dest.ExternalId, opt =>
 					opt.MapFrom(src => src.Id)
+				)
+				.ForMember(dest => dest.Id, opt =>
+					opt.Ignore()
 				);
 			CreateMap<UserDeleted, User>()
 				.ForMember(dest => dest.ExternalId, opt =>
 					opt.MapFrom(src => src.Id)
+				)
+				.ForMember(dest => dest.Id, opt =>
+					opt.Ignore()
 				);
 		}
 	}
