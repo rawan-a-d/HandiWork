@@ -127,7 +127,7 @@ namespace Users.Controllers
 						// Publish UserDeleted event
 						await _publishEndPoint.Publish<UserDeleted>(new
 						{
-							Id = userId,
+							Id = user.Id,
 						});
 					}
 					catch (Exception ex)
