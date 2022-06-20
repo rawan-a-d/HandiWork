@@ -24,8 +24,8 @@ namespace Services.Consumers
 			await Console.Out.WriteLineAsync(context.Message.Name);
 			_logger.LogInformation($"Got new message {context.Message.Name}");
 
-			var userCreated = context.Message;
-			var userModel = _mapper.Map<User>(context.Message);
+			UserCreated userCreated = context.Message;
+			var userModel = _mapper.Map<User>(userCreated);
 
 			_userRepository.CreateUser(userModel);
 

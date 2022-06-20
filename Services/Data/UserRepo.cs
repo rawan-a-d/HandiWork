@@ -43,7 +43,7 @@ namespace Services.Data
 
 		public bool SaveChanges()
 		{
-			return (_context.SaveChanges() > 0);
+			return (_context.SaveChanges() >= 0);
 		}
 	}
 }
