@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="CloudinaryDotNet" Version="1.18.0" />
-    <!--<PackageReference Include="HandiWork.MessagingModels" Version="1.0.3" />-->
     <PackageReference Include="HandiWork.MessagingModels" Version="1.0.7" />
     <PackageReference Include="MassTransit" Version="8.0.1" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
@@ -29,6 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MessagingModels\MessagingModels.csproj" />
+    <!--<ProjectReference Include="..\MessagingModels\MessagingModels.csproj" />-->
   </ItemGroup>
 </Project>
